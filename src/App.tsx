@@ -2,25 +2,35 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
+interface Pic {
+  picId: number;
+  path: string;
+}
+interface PicResponse {
+  data: Pic[];
+  message: 'success';
+}
+
 function App() {
-  const [pics, setPics] = useState([]);
+  const [pics, setPics] = useState<Pic[]>([]);
 
   useEffect(() => {
     axios
-      .get('/api/v1/pics')
+      .get<PicResponse>('/api/v1/pics')
       .then(function (response) {
-        // handle success
+        setPics(response.data.data);
         console.log(response);
       })
       .catch(function (error) {
-        // handle error
         console.log(error);
       });
   }, []);
 
   return (
     <div>
-      <p>meow</p>
+      {pics.map((pic) => (
+        <img src={`/pics/${pic.path}`} alt={pic.path} />
+      ))}
     </div>
   );
 }
