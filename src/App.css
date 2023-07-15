@@ -1,0 +1,14 @@
+.mainCompare {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+.mainCompare img {
+  max-width: 50%;
+  object-fit: scale-down;
+}
+
+.mainCompare .a {
+}
+.mainCompare .b {
+}
