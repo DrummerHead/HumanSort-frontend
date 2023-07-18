@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import loading from './images/loading.png';
 import axios from 'axios';
 import './App.css';
 
@@ -29,8 +30,8 @@ const getRandItem = <T,>(array: T[]): T => array[randInt(array.length)];
 
 function App() {
   const [pics, setPics] = useState<Pic[]>([
-    { picId: 0, path: '' },
-    { picId: 1, path: '' },
+    { picId: 0, path: loading },
+    { picId: 1, path: loading },
   ]);
   const [ranking, setRanking] = useState<Rank[]>([]);
   const a: Pic = getRandItem(pics);
@@ -82,15 +83,15 @@ function App() {
   return (
     <div>
       <div className="mainCompare">
-        <img src={`/pics/${a.path}`} className="a" alt={a.path} />
-        <img src={`/pics/${b.path}`} className="b" alt={b.path} />
+        <img src={a.path} className="a" alt={a.path} />
+        <img src={b.path} className="b" alt={b.path} />
       </div>
       <ol className="ranking">
         {ranking.length > 0
           ? ranking.map((rank) => (
-              <li>
+              <li key={rank.rank}>
                 <span>{rank.rank}</span>
-                <img src={`/pics/${rank.path}`} alt={rank.path} />
+                <img src={rank.path} alt={rank.path} />
               </li>
             ))
           : null}
