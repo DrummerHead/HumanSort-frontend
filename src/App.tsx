@@ -4,9 +4,11 @@ import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import './App.css';
 
-interface Response<T> {
-  data: T[];
+interface Success {
   message: 'success';
+}
+interface PicsRanked {
+  picsRanked: number;
 }
 
 interface Pic {
@@ -18,11 +20,18 @@ interface Rank extends Pic {
   rank: number;
   rankedOn: string;
 }
-type RankResponse = Response<Rank>;
+interface RankResponse extends Success, PicsRanked {
+  ranks: Rank[];
+}
+interface PostRankResponse extends Success, PicsRanked {}
 
 interface RankMeta extends Rank {
   outcast: boolean;
   comparing: boolean;
+}
+interface OneRankedReponse extends Success {
+  newPic: Pic;
+  picsToBeRanked: number;
 }
 
 const defaultPic: Pic = { picId: 0, path: loading };
@@ -169,11 +178,11 @@ function App() {
   useEffect(() => {
     // Get one non ranked pic
     axios
-      .get('/api/v1/one-non-ranked')
+      .get<OneRankedReponse>('/api/v1/one-non-ranked')
       .then(function (response) {
-        setNewPic(response.data.data);
+        setNewPic(response.data.newPic);
         console.log('/api/v1/one-non-ranked return:');
-        console.log(response.data.data);
+        console.log(response.data);
       })
       .catch(function (error) {
         toast.error(error.response.data.error);
@@ -186,21 +195,19 @@ function App() {
     axios
       .get<RankResponse>('/api/v1/ranking')
       .then(function (response) {
-        console.log(response.data.data.length);
-
-        if (response.data.data.length > 0) {
-          setRanking(setFreshRankMeta(response.data.data));
+        if (response.data.picsRanked > 0) {
+          setRanking(setFreshRankMeta(response.data.ranks));
         } else {
           axios
-            .get('/api/v1/one-non-ranked')
+            .get<OneRankedReponse>('/api/v1/one-non-ranked')
             .then(function (response) {
               setRanking(
                 setFreshRankMeta([
-                  { ...response.data.data, rank: 1, rankedOn: today },
+                  { ...response.data.newPic, rank: 1, rankedOn: today },
                 ])
               );
               console.log('/api/v1/one-non-ranked return:');
-              console.log(response.data.data);
+              console.log(response.data);
             })
             .catch(function (error) {
               toast.error(error.response.data.error);
@@ -209,7 +216,7 @@ function App() {
         }
 
         console.log('/api/v1/ranking return:');
-        console.log(response.data.data);
+        console.log(response.data);
       })
       .catch(function (error) {
         toast.error(error.response.data.error);
@@ -227,17 +234,18 @@ function App() {
       setRanking(rankings);
       if (newPicInserted) {
         axios
-          .post('/api/v1/ranking', rankings)
+          .post<PostRankResponse>('/api/v1/ranking', rankings)
           .then(function (response) {
-            console.log(response);
+            console.log('POST /api/v1/ranking response:');
+            console.log(response.data);
           })
           .then(function () {
             axios
-              .get('/api/v1/one-non-ranked')
+              .get<OneRankedReponse>('/api/v1/one-non-ranked')
               .then(function (response) {
-                setNewPic(response.data.data);
+                setNewPic(response.data.newPic);
                 console.log('/api/v1/one-non-ranked return:');
-                console.log(response.data.data);
+                console.log(response.data);
               })
               .catch(function (error) {
                 toast.error(error.response.data.error);
