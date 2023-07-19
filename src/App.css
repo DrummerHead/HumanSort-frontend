@@ -11,17 +11,13 @@ body {
   object-fit: scale-down;
 }
 
-.mainCompare .a {
-}
-.mainCompare .b {
-}
-
 .ranking {
-  list-style-type: none;
+  display: flex;
+  flex-direction: row-reverse;
+  max-width: 100vw;
   margin: 0;
   padding: 0;
-  display: flex;
-  max-width: 100vw;
+  list-style-type: none;
 }
 .ranking li {
   flex: 1 1;
@@ -44,5 +40,13 @@ body {
   opacity: 1;
 }
 .ranking img {
+  display: block;
   max-width: 100%;
+}
+.comparing {
+  outline: 0.4rem solid #fff7;
+  z-index: 7;
+}
+.outcast {
+  opacity: 0.25;
 }
