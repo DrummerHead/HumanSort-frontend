@@ -9,7 +9,7 @@ import type {
   RankMeta,
   OneNonRankedReponse,
 } from './types';
-import { getPivot, today, setFreshRankMeta, pathToName } from './tinyFunctions';
+import { getPivot, today, setFreshRankMeta } from './tinyFunctions';
 import { defaultPic, defaultRank } from './defaultObjects';
 import { binaryCompare } from './binaryCompare';
 import { constrainRank } from './constrainRank';
@@ -21,6 +21,8 @@ function App() {
   const [rankedAmount, setRankedAmount] = useState<number>();
   const [unrankedAmount, setUnrankedAmount] = useState<number>();
   const [compareMode, setCompareMode] = useState<boolean>(true);
+  const [leftHighlight, setLeftHighlight] = useState<boolean>(false);
+  const [rightHighlight, setrightHighlight] = useState<boolean>(false);
   const [finalState, setFinalState] = useState<boolean>(false);
   const pivot: RankMeta = getPivot(ranking);
 
@@ -117,8 +119,10 @@ function App() {
 
     const keyHandler = (ev: KeyboardEvent): void => {
       if (ev.key === 'ArrowLeft') {
+        setLeftHighlight(true);
         choose(true);
       } else if (ev.key === 'ArrowRight') {
+        setrightHighlight(true);
         choose(false);
       }
     };
@@ -128,11 +132,30 @@ function App() {
     };
   }, [newPic, ranking, compareMode]);
 
+  useEffect(() => {
+    const keyHandler = (ev: KeyboardEvent): void => {
+      setLeftHighlight(false);
+      setrightHighlight(false);
+    };
+    compareMode && document.addEventListener('keyup', keyHandler);
+    return () => {
+      compareMode && document.removeEventListener('keyup', keyHandler);
+    };
+  }, [compareMode]);
+
   return (
     <div>
       {compareMode ? (
         <div id="compareMode">
-          <div className="mainCompare">
+          <div
+            className={`mainCompare ${
+              leftHighlight
+                ? 'leftHighlight'
+                : rightHighlight
+                ? 'rightHighlight'
+                : ''
+            }`}
+          >
             <img src={newPic.path} alt={newPic.path} title={newPic.path} />
             <img src={pivot.path} alt={pivot.name} title={pivot.name} />
           </div>

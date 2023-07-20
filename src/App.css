@@ -26,9 +26,29 @@ ol {
 /* ---- Main Compare  */
 
 .mainCompare {
+  --ch: var(--wt);
+  --ct: #80808000;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+}
+.mainCompare.leftHighlight {
+  background: linear-gradient(
+    90deg,
+    var(--ct) 7%,
+    var(--ch) 30%,
+    var(--ct) 50%,
+    var(--ct) 100%
+  );
+}
+.mainCompare.rightHighlight {
+  background: linear-gradient(
+    90deg,
+    var(--ct) 0%,
+    var(--ct) 50%,
+    var(--ch) 70%,
+    var(--ct) 93%
+  );
 }
 .mainCompare img {
   max-width: 50%;
