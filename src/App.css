@@ -116,6 +116,25 @@ ol {
   background-color: #999;
 }
 
+.rd77em {
+  font-size: 0.77em;
+}
+.rd5em {
+  font-size: 0.5em;
+}
+.rd2em {
+  font-size: 0.2em;
+}
+.r0em {
+  font-size: 0;
+}
+.rNoOutline li {
+  outline: none;
+}
+.rHide {
+  display: none;
+}
+
 /* ================== *\
 |*    Gallery mode    *|
 \* ================== */

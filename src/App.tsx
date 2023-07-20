@@ -9,7 +9,7 @@ import type {
   RankMeta,
   OneNonRankedReponse,
 } from './types';
-import { getPivot, today, setFreshRankMeta } from './tinyFunctions';
+import { getPivot, today, setFreshRankMeta, rankClass } from './tinyFunctions';
 import { defaultPic, defaultRank } from './defaultObjects';
 import { binaryCompare } from './binaryCompare';
 import { constrainRank } from './constrainRank';
@@ -159,7 +159,7 @@ function App() {
             <img src={newPic.path} alt={newPic.path} title={newPic.path} />
             <img src={pivot.path} alt={pivot.name} title={pivot.name} />
           </div>
-          <ol className="ranking visualization">
+          <ol className={`ranking visualization ${rankClass(ranking)}`}>
             {ranking.length > 0
               ? ranking.map((rank) => (
                   <li
