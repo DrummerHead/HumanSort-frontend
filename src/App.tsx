@@ -1,174 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import loading from './images/loading.png';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
+
+import type {
+  Pic,
+  RankResponse,
+  PostRankResponse,
+  RankMeta,
+  OneNonRankedReponse,
+} from './types';
+import { getPivot, today, setFreshRankMeta } from './tinyFunctions';
+import { defaultPic, defaultRank } from './defaultObjects';
+import { binaryCompare } from './binaryCompare';
 import './App.css';
-
-interface Success {
-  message: 'success';
-}
-interface RankedAmount {
-  rankedAmount: number;
-}
-
-interface Pic {
-  picId: number;
-  path: string;
-}
-
-interface Rank extends Pic {
-  rank: number;
-  rankedOn: string;
-}
-interface RankResponse extends Success, RankedAmount {
-  ranks: Rank[];
-}
-interface PostRankResponse extends Success, RankedAmount {}
-
-interface RankMeta extends Rank {
-  outcast: boolean;
-  pivot: boolean;
-}
-interface OneNonRankedReponse extends Success {
-  newPic: Pic;
-  unrankedAmount: number;
-}
-
-const defaultPic: Pic = { picId: 0, path: loading };
-const defaultRank: RankMeta = {
-  picId: 1,
-  path: loading,
-  rank: 1,
-  rankedOn: '2023-07-17',
-  outcast: false,
-  pivot: true,
-};
-
-const getPivot = (ranks: RankMeta[]): RankMeta =>
-  ranks.find((r) => r.pivot) || defaultRank;
-
-const findPivotIndex = <T,>(array: T[]): number =>
-  Math.ceil(array.length / 2) - 1;
-
-const today = new Date().toISOString().split('T')[0];
-
-const setFreshRankMeta = (ranks: Rank[]): RankMeta[] => {
-  // We assume that all ranks exist from 1 to n and in this case
-  // length maps to minimum rank so we can find the ranked pic
-  // in the middle of the pack
-  const pivot = findPivotIndex(ranks);
-  return ranks.map((rank) => ({
-    ...rank,
-    outcast: false,
-    pivot: rank.rank === pivot + 1,
-  }));
-};
-
-interface BinaryCompareReturn {
-  rankings: RankMeta[];
-  newPicInserted: boolean;
-}
-const binaryCompare = (
-  picToCompare: Pic,
-  ranking: RankMeta[],
-  isPicToCompareBetterThanPivot: boolean
-): BinaryCompareReturn => {
-  const incast: RankMeta[] = ranking.filter((rank) => !rank.outcast) || [
-    defaultRank,
-  ];
-  const pivot: RankMeta = incast.find((rank) => rank.pivot) || defaultRank;
-  const newIncast: RankMeta[] = incast.filter((rank) =>
-    isPicToCompareBetterThanPivot
-      ? rank.rank < pivot.rank
-      : rank.rank > pivot.rank
-  );
-
-  if (newIncast.length === 0) {
-    const rankingsWithNewPic: RankMeta[] = ranking.reduce<RankMeta[]>(
-      (acc, curr) => {
-        if (curr.rank < pivot.rank) {
-          return [...acc, curr];
-        }
-        if (curr.rank === pivot.rank) {
-          const picWithMeta: RankMeta = {
-            ...picToCompare,
-            rank: isPicToCompareBetterThanPivot ? pivot.rank : pivot.rank + 1,
-            rankedOn: today,
-            outcast: false,
-            pivot: false,
-          };
-          const newPivot = {
-            ...pivot,
-            rank: isPicToCompareBetterThanPivot ? pivot.rank + 1 : pivot.rank,
-          };
-          return isPicToCompareBetterThanPivot
-            ? [...acc, picWithMeta, newPivot]
-            : [...acc, newPivot, picWithMeta];
-        }
-        if (curr.rank > pivot.rank) {
-          return [
-            ...acc,
-            {
-              ...curr,
-              rank: curr.rank + 1,
-            },
-          ];
-        }
-        return acc;
-      },
-      []
-    );
-
-    return {
-      rankings: setFreshRankMeta(rankingsWithNewPic),
-      newPicInserted: true,
-    };
-  }
-
-  const newPivotIndex: number = findPivotIndex(newIncast);
-  const newPivot: RankMeta = newIncast[newPivotIndex];
-  const rankingsWithMetadata: RankMeta[] = ranking.map((rank) => {
-    if (rank.outcast) {
-      return rank;
-    }
-    if (rank.pivot) {
-      return {
-        ...rank,
-        pivot: false,
-        outcast: true,
-      };
-    }
-    if (rank.rank === newPivot.rank) {
-      return {
-        ...rank,
-        pivot: true,
-        outcast: false,
-      };
-    }
-    if (rank.rank > pivot.rank) {
-      return isPicToCompareBetterThanPivot
-        ? {
-            ...rank,
-            outcast: true,
-          }
-        : rank;
-    }
-    if (rank.rank < pivot.rank) {
-      return isPicToCompareBetterThanPivot
-        ? rank
-        : {
-            ...rank,
-            outcast: true,
-          };
-    }
-    return rank;
-  });
-
-  return {
-    rankings: rankingsWithMetadata,
-    newPicInserted: false,
-  };
-};
 
 function App() {
   const [ranking, setRanking] = useState<RankMeta[]>([defaultRank]);
