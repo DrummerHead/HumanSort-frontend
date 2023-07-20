@@ -176,6 +176,7 @@ function App() {
   const [rankedAmount, setRankedAmount] = useState<number>();
   const [unrankedAmount, setUnrankedAmount] = useState<number>();
   const [compareMode, setCompareMode] = useState<boolean>(true);
+  const [finalState, setFinalState] = useState<boolean>(false);
   const pivot: RankMeta = getPivot(ranking);
 
   useEffect(() => {
@@ -185,6 +186,11 @@ function App() {
       .then(function (response) {
         setNewPic(response.data.newPic);
         setUnrankedAmount(response.data.unrankedAmount);
+        if (response.data.unrankedAmount === 0) {
+          setFinalState(true);
+          setCompareMode(false);
+          toast.success('All of the images are ranked! You did it!');
+        }
         console.log('/api/v1/one-non-ranked return:');
         console.log(response.data);
       })
@@ -252,6 +258,11 @@ function App() {
               .then(function (response) {
                 setNewPic(response.data.newPic);
                 setUnrankedAmount(response.data.unrankedAmount);
+                if (response.data.unrankedAmount === 0) {
+                  setFinalState(true);
+                  setCompareMode(false);
+                  toast.success('All of the images are ranked! You did it!');
+                }
                 console.log('/api/v1/one-non-ranked return:');
                 console.log(response.data);
               })
@@ -334,7 +345,10 @@ function App() {
         </p>
       </div>
       <div className="controls">
-        <button onClick={() => setCompareMode(true)} disabled={compareMode}>
+        <button
+          onClick={() => setCompareMode(true)}
+          disabled={compareMode || finalState}
+        >
           Compare
         </button>
         <button onClick={() => setCompareMode(false)} disabled={!compareMode}>
