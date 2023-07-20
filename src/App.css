@@ -58,15 +58,10 @@ ol {
   font-weight: bold;
   color: #000;
   text-shadow:
-    1px 1px 1px var(--wt),
-    1px -1px 1px var(--wt),
-    -1px 1px 1px var(--wt),
-    -1px -1px 1px var(--wt);
-  opacity: 0.5;
-  transition: 200ms ease-in-out opacity;
-}
-.ranking li:hover span {
-  opacity: 1;
+    1px 1px 0 var(--wt),
+    1px -1px 0 var(--wt),
+    -1px 1px 0 var(--wt),
+    -1px -1px 0 var(--wt);
 }
 .ranking img {
   display: block;
@@ -79,6 +74,26 @@ ol {
 }
 .outcast {
   opacity: 0.25;
+}
+
+/* ---- Ranking visualization */
+
+.visualization {
+  --side: 4rem;
+}
+.visualization li {
+  height: var(--side);
+  flex-basis: var(--side);
+  line-height: var(--side);
+  text-align: center;
+  outline: 1px solid #333;
+  background-color: #555;
+}
+.visualization .outcast {
+  background-color: #777;
+}
+.visualization .pivot {
+  background-color: #999;
 }
 
 /* ================== *\
@@ -108,7 +123,6 @@ ol {
 }
 .gallery span {
   font-size: 2em;
-  opacity: 1;
 }
 .gallery img {
   display: block;

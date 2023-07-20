@@ -12,6 +12,7 @@ import type {
 import { getPivot, today, setFreshRankMeta } from './tinyFunctions';
 import { defaultPic, defaultRank } from './defaultObjects';
 import { binaryCompare } from './binaryCompare';
+import { constrainRank } from './constrainRank';
 import './App.css';
 
 function App() {
@@ -133,9 +134,27 @@ function App() {
             <img src={newPic.path} alt={newPic.path} title={newPic.path} />
             <img src={pivot.path} alt={pivot.path} title={pivot.path} />
           </div>
-          <ol className="ranking">
+          <ol className="ranking visualization">
             {ranking.length > 0
               ? ranking.map((rank) => (
+                  <li
+                    key={rank.rank}
+                    className={
+                      rank.outcast
+                        ? 'outcast'
+                        : rank.pivot
+                        ? 'pivot'
+                        : undefined
+                    }
+                  >
+                    {rank.rank}
+                  </li>
+                ))
+              : null}
+          </ol>
+          <ol className="ranking">
+            {ranking.length > 0
+              ? constrainRank(ranking).map((rank) => (
                   <li
                     key={rank.rank}
                     className={
