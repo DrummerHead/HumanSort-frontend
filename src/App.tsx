@@ -7,8 +7,8 @@ import './App.css';
 interface Success {
   message: 'success';
 }
-interface PicsRanked {
-  picsRanked: number;
+interface RankedAmount {
+  rankedAmount: number;
 }
 
 interface Pic {
@@ -20,18 +20,18 @@ interface Rank extends Pic {
   rank: number;
   rankedOn: string;
 }
-interface RankResponse extends Success, PicsRanked {
+interface RankResponse extends Success, RankedAmount {
   ranks: Rank[];
 }
-interface PostRankResponse extends Success, PicsRanked {}
+interface PostRankResponse extends Success, RankedAmount {}
 
 interface RankMeta extends Rank {
   outcast: boolean;
-  comparing: boolean;
+  pivot: boolean;
 }
 interface OneRankedReponse extends Success {
   newPic: Pic;
-  picsToBeRanked: number;
+  unrankedAmount: number;
 }
 
 const defaultPic: Pic = { picId: 0, path: loading };
@@ -41,11 +41,11 @@ const defaultRank: RankMeta = {
   rank: 1,
   rankedOn: '2023-07-17',
   outcast: false,
-  comparing: true,
+  pivot: true,
 };
 
 const getPivot = (ranks: RankMeta[]): RankMeta =>
-  ranks.find((r) => r.comparing) || defaultRank;
+  ranks.find((r) => r.pivot) || defaultRank;
 
 const findPivotIndex = <T,>(array: T[]): number =>
   Math.ceil(array.length / 2) - 1;
@@ -60,7 +60,7 @@ const setFreshRankMeta = (ranks: Rank[]): RankMeta[] => {
   return ranks.map((rank) => ({
     ...rank,
     outcast: false,
-    comparing: rank.rank === pivot + 1,
+    pivot: rank.rank === pivot + 1,
   }));
 };
 
@@ -76,7 +76,7 @@ const binaryCompare = (
   const incast: RankMeta[] = ranking.filter((rank) => !rank.outcast) || [
     defaultRank,
   ];
-  const pivot: RankMeta = incast.find((rank) => rank.comparing) || defaultRank;
+  const pivot: RankMeta = incast.find((rank) => rank.pivot) || defaultRank;
   const newIncast: RankMeta[] = incast.filter((rank) =>
     isPicToCompareBetterThanPivot
       ? rank.rank < pivot.rank
@@ -90,12 +90,12 @@ const binaryCompare = (
           return [...acc, curr];
         }
         if (curr.rank === pivot.rank) {
-          const picWithMeta = {
+          const picWithMeta: RankMeta = {
             ...picToCompare,
             rank: isPicToCompareBetterThanPivot ? pivot.rank : pivot.rank + 1,
             rankedOn: today,
             outcast: false,
-            comparing: false,
+            pivot: false,
           };
           const newPivot = {
             ...pivot,
@@ -131,17 +131,17 @@ const binaryCompare = (
     if (rank.outcast) {
       return rank;
     }
-    if (rank.comparing) {
+    if (rank.pivot) {
       return {
         ...rank,
-        comparing: false,
+        pivot: false,
         outcast: true,
       };
     }
     if (rank.rank === newPivot.rank) {
       return {
         ...rank,
-        comparing: true,
+        pivot: true,
         outcast: false,
       };
     }
@@ -173,6 +173,8 @@ const binaryCompare = (
 function App() {
   const [ranking, setRanking] = useState<RankMeta[]>([defaultRank]);
   const [newPic, setNewPic] = useState<Pic>(defaultPic);
+  const [rankedAmount, setRankedAmount] = useState<number>();
+  const [unrankedAmount, setUnrankedAmount] = useState<number>();
   const pivot: Pic = getPivot(ranking);
 
   useEffect(() => {
@@ -181,6 +183,7 @@ function App() {
       .get<OneRankedReponse>('/api/v1/one-non-ranked')
       .then(function (response) {
         setNewPic(response.data.newPic);
+        setUnrankedAmount(response.data.unrankedAmount);
         console.log('/api/v1/one-non-ranked return:');
         console.log(response.data);
       })
@@ -195,7 +198,9 @@ function App() {
     axios
       .get<RankResponse>('/api/v1/ranking')
       .then(function (response) {
-        if (response.data.picsRanked > 0) {
+        setRankedAmount(response.data.rankedAmount);
+
+        if (response.data.rankedAmount > 0) {
           setRanking(setFreshRankMeta(response.data.ranks));
         } else {
           axios
@@ -236,6 +241,7 @@ function App() {
         axios
           .post<PostRankResponse>('/api/v1/ranking', rankings)
           .then(function (response) {
+            setRankedAmount(response.data.rankedAmount);
             console.log('POST /api/v1/ranking response:');
             console.log(response.data);
           })
@@ -244,6 +250,7 @@ function App() {
               .get<OneRankedReponse>('/api/v1/one-non-ranked')
               .then(function (response) {
                 setNewPic(response.data.newPic);
+                setUnrankedAmount(response.data.unrankedAmount);
                 console.log('/api/v1/one-non-ranked return:');
                 console.log(response.data);
               })
@@ -284,11 +291,7 @@ function App() {
               <li
                 key={rank.rank}
                 className={
-                  rank.outcast
-                    ? 'outcast'
-                    : rank.comparing
-                    ? 'comparing'
-                    : undefined
+                  rank.outcast ? 'outcast' : rank.pivot ? 'pivot' : undefined
                 }
               >
                 <span>{rank.rank}</span>
@@ -297,6 +300,14 @@ function App() {
             ))
           : null}
       </ol>
+      <div className="stats">
+        <p>
+          ranked: <strong>{rankedAmount}</strong>
+        </p>
+        <p>
+          unranked: <strong>{unrankedAmount}</strong>
+        </p>
+      </div>
       <Toaster />
     </div>
   );

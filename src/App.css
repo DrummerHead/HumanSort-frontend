@@ -1,6 +1,13 @@
+/* ==== General */
+
 body {
   background-color: #808080;
+  font-family: Bahnschrift, 'DIN Alternate', 'Franklin Gothic Medium',
+    'Nimbus Sans Narrow', sans-serif-condensed, sans-serif;
 }
+
+/* ==== Main Compare */
+
 .mainCompare {
   display: flex;
   flex-flow: row nowrap;
@@ -11,16 +18,20 @@ body {
   object-fit: scale-down;
 }
 
+/* ==== Ranking */
+
 .ranking {
   display: flex;
   flex-direction: row-reverse;
+  justify-content: center;
   max-width: 100vw;
   margin: 0;
   padding: 0;
   list-style-type: none;
+  background-color: #4444;
 }
 .ranking li {
-  flex: 1 1;
+  flex: 0 1 14rem;
   position: relative;
 }
 .ranking span {
@@ -42,11 +53,34 @@ body {
 .ranking img {
   display: block;
   max-width: 100%;
+  max-height: 14rem;
 }
-.comparing {
+.pivot {
   outline: 0.4rem solid #fff7;
   z-index: 7;
 }
 .outcast {
   opacity: 0.25;
+}
+
+/* ==== Stats  */
+
+.stats {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 1em 1.2em;
+  font-size: 1.7777em;
+  text-transform: uppercase;
+  color: #474747;
+}
+.stats p {
+  margin: 0.2em 0;
+  text-align: right;
+}
+.stats strong {
+  display: inline-block;
+  min-width: 2em;
+  text-align: left;
+  color: #000;
 }
