@@ -29,7 +29,7 @@ interface RankMeta extends Rank {
   outcast: boolean;
   pivot: boolean;
 }
-interface OneRankedReponse extends Success {
+interface OneNonRankedReponse extends Success {
   newPic: Pic;
   unrankedAmount: number;
 }
@@ -179,18 +179,12 @@ function App() {
   const [finalState, setFinalState] = useState<boolean>(false);
   const pivot: RankMeta = getPivot(ranking);
 
-  useEffect(() => {
+  const getOneRanked = (fn: (respData: OneNonRankedReponse) => void): void => {
     // Get one non ranked pic
     axios
-      .get<OneRankedReponse>('/api/v1/one-non-ranked')
+      .get<OneNonRankedReponse>('/api/v1/one-non-ranked')
       .then(function (response) {
-        setNewPic(response.data.newPic);
-        setUnrankedAmount(response.data.unrankedAmount);
-        if (response.data.unrankedAmount === 0) {
-          setFinalState(true);
-          setCompareMode(false);
-          toast.success('All of the images are ranked! You did it!');
-        }
+        fn(response.data);
         console.log('/api/v1/one-non-ranked return:');
         console.log(response.data);
       })
@@ -198,6 +192,18 @@ function App() {
         toast.error(error.response.data.error);
         console.log(error);
       });
+  };
+
+  useEffect(() => {
+    getOneRanked((respData) => {
+      setNewPic(respData.newPic);
+      setUnrankedAmount(respData.unrankedAmount);
+      if (respData.unrankedAmount === 0) {
+        setFinalState(true);
+        setCompareMode(false);
+        toast.success('All of the images are ranked! You did it!');
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -210,21 +216,13 @@ function App() {
         if (response.data.rankedAmount > 0) {
           setRanking(setFreshRankMeta(response.data.ranks));
         } else {
-          axios
-            .get<OneRankedReponse>('/api/v1/one-non-ranked')
-            .then(function (response) {
-              setRanking(
-                setFreshRankMeta([
-                  { ...response.data.newPic, rank: 1, rankedOn: today },
-                ])
-              );
-              console.log('/api/v1/one-non-ranked return:');
-              console.log(response.data);
-            })
-            .catch(function (error) {
-              toast.error(error.response.data.error);
-              console.log(error);
-            });
+          getOneRanked((respData) => {
+            setRanking(
+              setFreshRankMeta([
+                { ...respData.newPic, rank: 1, rankedOn: today },
+              ])
+            );
+          });
         }
 
         console.log('/api/v1/ranking return:');
@@ -253,23 +251,15 @@ function App() {
             console.log(response.data);
           })
           .then(function () {
-            axios
-              .get<OneRankedReponse>('/api/v1/one-non-ranked')
-              .then(function (response) {
-                setNewPic(response.data.newPic);
-                setUnrankedAmount(response.data.unrankedAmount);
-                if (response.data.unrankedAmount === 0) {
-                  setFinalState(true);
-                  setCompareMode(false);
-                  toast.success('All of the images are ranked! You did it!');
-                }
-                console.log('/api/v1/one-non-ranked return:');
-                console.log(response.data);
-              })
-              .catch(function (error) {
-                toast.error(error.response.data.error);
-                console.log(error);
-              });
+            getOneRanked((respData) => {
+              setNewPic(respData.newPic);
+              setUnrankedAmount(respData.unrankedAmount);
+              if (respData.unrankedAmount === 0) {
+                setFinalState(true);
+                setCompareMode(false);
+                toast.success('All of the images are ranked! You did it!');
+              }
+            });
           })
           .catch(function (error) {
             toast.error(error.response.data.error);
@@ -336,6 +326,7 @@ function App() {
           </nav>
         </div>
       )}
+
       <div className="stats">
         <p>
           ranked: <strong>{rankedAmount}</strong>
@@ -344,6 +335,7 @@ function App() {
           unranked: <strong>{unrankedAmount}</strong>
         </p>
       </div>
+
       <div className="controls">
         <button
           onClick={() => setCompareMode(true)}
