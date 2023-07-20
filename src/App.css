@@ -123,9 +123,19 @@ ol {
 }
 .gallery span {
   font-size: 2em;
+  top: 1.7rem;
 }
 .gallery img {
   display: block;
+}
+.gallery p {
+  max-width: 30.7rem;
+  margin: 0;
+  padding-bottom: 0.2rem;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 #galleryMode nav {
   display: flex;

@@ -10,6 +10,12 @@ export const findPivotIndex = <T>(array: T[]): number =>
 // not even a fn lol
 export const today = new Date().toISOString().split('T')[0];
 
+export const pathToName = (path: string): string =>
+  path
+    .replace(/^\/pics\//, '')
+    .replace(/-/g, ' ')
+    .replace(/.png$/, '');
+
 export const setFreshRankMeta = (ranks: Rank[]): RankMeta[] => {
   // We assume that all ranks exist from 1 to n and in this case
   // length maps to minimum rank so we can find the ranked pic
@@ -19,5 +25,6 @@ export const setFreshRankMeta = (ranks: Rank[]): RankMeta[] => {
     ...rank,
     outcast: false,
     pivot: rank.rank === pivot + 1,
+    name: pathToName(rank.path),
   }));
 };

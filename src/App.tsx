@@ -9,7 +9,7 @@ import type {
   RankMeta,
   OneNonRankedReponse,
 } from './types';
-import { getPivot, today, setFreshRankMeta } from './tinyFunctions';
+import { getPivot, today, setFreshRankMeta, pathToName } from './tinyFunctions';
 import { defaultPic, defaultRank } from './defaultObjects';
 import { binaryCompare } from './binaryCompare';
 import { constrainRank } from './constrainRank';
@@ -24,7 +24,9 @@ function App() {
   const [finalState, setFinalState] = useState<boolean>(false);
   const pivot: RankMeta = getPivot(ranking);
 
-  const getOneRanked = (fn: (respData: OneNonRankedReponse) => void): void => {
+  const getOneNoneRanked = (
+    fn: (respData: OneNonRankedReponse) => void
+  ): void => {
     // Get one non ranked pic
     axios
       .get<OneNonRankedReponse>('/api/v1/one-non-ranked')
@@ -40,7 +42,7 @@ function App() {
   };
 
   useEffect(() => {
-    getOneRanked((respData) => {
+    getOneNoneRanked((respData) => {
       setNewPic(respData.newPic);
       setUnrankedAmount(respData.unrankedAmount);
       if (respData.unrankedAmount === 0) {
@@ -61,7 +63,7 @@ function App() {
         if (response.data.rankedAmount > 0) {
           setRanking(setFreshRankMeta(response.data.ranks));
         } else {
-          getOneRanked((respData) => {
+          getOneNoneRanked((respData) => {
             setRanking(
               setFreshRankMeta([
                 { ...respData.newPic, rank: 1, rankedOn: today },
@@ -96,7 +98,7 @@ function App() {
             console.log(response.data);
           })
           .then(function () {
-            getOneRanked((respData) => {
+            getOneNoneRanked((respData) => {
               setNewPic(respData.newPic);
               setUnrankedAmount(respData.unrankedAmount);
               if (respData.unrankedAmount === 0) {
@@ -132,7 +134,7 @@ function App() {
         <div id="compareMode">
           <div className="mainCompare">
             <img src={newPic.path} alt={newPic.path} title={newPic.path} />
-            <img src={pivot.path} alt={pivot.path} title={pivot.path} />
+            <img src={pivot.path} alt={pivot.name} title={pivot.name} />
           </div>
           <ol className="ranking visualization">
             {ranking.length > 0
@@ -166,7 +168,7 @@ function App() {
                     }
                   >
                     <span>{rank.rank}</span>
-                    <img src={rank.path} alt={rank.path} title={rank.path} />
+                    <img src={rank.path} alt={rank.name} title={rank.name} />
                   </li>
                 ))
               : null}
@@ -178,7 +180,8 @@ function App() {
             {ranking.map((rank) => (
               <li key={rank.rank} id={`rank${rank.rank}`}>
                 <span>{rank.rank}</span>
-                <img src={rank.path} alt={rank.path} title={rank.path} />
+                <p>{rank.name}</p>
+                <img src={rank.path} alt={rank.name} />
               </li>
             ))}
           </ol>

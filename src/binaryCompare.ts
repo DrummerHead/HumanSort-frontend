@@ -1,5 +1,10 @@
 import type { Pic, RankMeta } from './types';
-import { findPivotIndex, today, setFreshRankMeta } from './tinyFunctions';
+import {
+  findPivotIndex,
+  today,
+  setFreshRankMeta,
+  pathToName,
+} from './tinyFunctions';
 import { defaultRank } from './defaultObjects';
 
 interface BinaryCompareReturn {
@@ -30,6 +35,7 @@ export const binaryCompare = (
         if (curr.rank === pivot.rank) {
           const picWithMeta: RankMeta = {
             ...picToCompare,
+            name: pathToName(picToCompare.path),
             rank: isPicToCompareBetterThanPivot ? pivot.rank : pivot.rank + 1,
             rankedOn: today,
             outcast: false,
