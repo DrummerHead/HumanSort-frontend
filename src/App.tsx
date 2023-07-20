@@ -175,7 +175,8 @@ function App() {
   const [newPic, setNewPic] = useState<Pic>(defaultPic);
   const [rankedAmount, setRankedAmount] = useState<number>();
   const [unrankedAmount, setUnrankedAmount] = useState<number>();
-  const pivot: Pic = getPivot(ranking);
+  const [compareMode, setCompareMode] = useState<boolean>(true);
+  const pivot: RankMeta = getPivot(ranking);
 
   useEffect(() => {
     // Get one non ranked pic
@@ -273,33 +274,57 @@ function App() {
         choose(false);
       }
     };
-    document.addEventListener('keydown', keyHandler);
+    compareMode && document.addEventListener('keydown', keyHandler);
     return () => {
-      document.removeEventListener('keydown', keyHandler);
+      compareMode && document.removeEventListener('keydown', keyHandler);
     };
-  }, [newPic, ranking]);
+  }, [newPic, ranking, compareMode]);
 
   return (
     <div>
-      <div className="mainCompare">
-        <img src={newPic.path} alt={newPic.path} title={newPic.path} />
-        <img src={pivot.path} alt={pivot.path} title={pivot.path} />
-      </div>
-      <ol className="ranking">
-        {ranking.length > 0
-          ? ranking.map((rank) => (
-              <li
-                key={rank.rank}
-                className={
-                  rank.outcast ? 'outcast' : rank.pivot ? 'pivot' : undefined
-                }
-              >
+      {compareMode ? (
+        <div id="compareMode">
+          <div className="mainCompare">
+            <img src={newPic.path} alt={newPic.path} title={newPic.path} />
+            <img src={pivot.path} alt={pivot.path} title={pivot.path} />
+          </div>
+          <ol className="ranking">
+            {ranking.length > 0
+              ? ranking.map((rank) => (
+                  <li
+                    key={rank.rank}
+                    className={
+                      rank.outcast
+                        ? 'outcast'
+                        : rank.pivot
+                        ? 'pivot'
+                        : undefined
+                    }
+                  >
+                    <span>{rank.rank}</span>
+                    <img src={rank.path} alt={rank.path} title={rank.path} />
+                  </li>
+                ))
+              : null}
+          </ol>
+        </div>
+      ) : (
+        <div id="galleryMode">
+          <ol className="gallery">
+            {ranking.map((rank) => (
+              <li key={rank.rank} id={`rank${rank.rank}`}>
                 <span>{rank.rank}</span>
                 <img src={rank.path} alt={rank.path} title={rank.path} />
               </li>
-            ))
-          : null}
-      </ol>
+            ))}
+          </ol>
+          <nav>
+            <a href={`#rank${ranking.length}`}>last</a>
+            <a href={`#rank${pivot.rank}`}>center</a>
+            <a href={`#rank1`}>first</a>
+          </nav>
+        </div>
+      )}
       <div className="stats">
         <p>
           ranked: <strong>{rankedAmount}</strong>
@@ -308,6 +333,15 @@ function App() {
           unranked: <strong>{unrankedAmount}</strong>
         </p>
       </div>
+      <div className="controls">
+        <button onClick={() => setCompareMode(true)} disabled={compareMode}>
+          Compare
+        </button>
+        <button onClick={() => setCompareMode(false)} disabled={!compareMode}>
+          Gallery
+        </button>
+      </div>
+
       <Toaster />
     </div>
   );

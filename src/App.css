@@ -1,12 +1,29 @@
-/* ==== General */
+/* ================== *\
+|*      General       *|
+\* ================== */
 
 body {
-  background-color: #808080;
+  --bgc: #808080;
+  --wt: #fff7;
+  --ot: 0.4rem;
+  background-color: var(--bgc);
+}
+body,
+button {
   font-family: Bahnschrift, 'DIN Alternate', 'Franklin Gothic Medium',
     'Nimbus Sans Narrow', sans-serif-condensed, sans-serif;
 }
+ol {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
 
-/* ==== Main Compare */
+/* ================== *\
+|*    Compare mode    *|
+\* ================== */
+
+/* ---- Main Compare  */
 
 .mainCompare {
   display: flex;
@@ -18,32 +35,33 @@ body {
   object-fit: scale-down;
 }
 
-/* ==== Ranking */
+/* ---- Ranking  */
 
 .ranking {
   display: flex;
+  flex-flow: row nowrap;
   flex-direction: row-reverse;
   justify-content: center;
   max-width: 100vw;
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
   background-color: #4444;
 }
 .ranking li {
   flex: 0 1 14rem;
   position: relative;
 }
-.ranking span {
+.ranking span,
+.gallery span {
   position: absolute;
   top: 0.5rem;
-  right: 0.5rem;
+  right: 0.7rem;
   font-size: 1rem;
   font-weight: bold;
   color: #000;
   text-shadow:
-    1px 1px 1px #fff,
-    -1px -1px 1px #fff;
+    1px 1px 1px var(--wt),
+    1px -1px 1px var(--wt),
+    -1px 1px 1px var(--wt),
+    -1px -1px 1px var(--wt);
   opacity: 0.5;
   transition: 200ms ease-in-out opacity;
 }
@@ -56,20 +74,66 @@ body {
   max-height: 14rem;
 }
 .pivot {
-  outline: 0.4rem solid #fff7;
+  outline: var(--ot) solid var(--wt);
   z-index: 7;
 }
 .outcast {
   opacity: 0.25;
 }
 
-/* ==== Stats  */
+/* ================== *\
+|*    Gallery mode    *|
+\* ================== */
+
+#galleryMode {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  min-height: calc(100vh - 7rem);
+}
+.gallery {
+  display: flex;
+  flex-flow: row nowrap;
+  flex-direction: row-reverse;
+  padding: var(--ot) 0;
+  overflow: scroll;
+  scroll-behavior: smooth;
+}
+.gallery li {
+  position: relative;
+}
+.gallery li:target {
+  outline: var(--ot) solid var(--wt);
+  z-index: 7;
+}
+.gallery span {
+  font-size: 2em;
+  opacity: 1;
+}
+.gallery img {
+  display: block;
+}
+#galleryMode nav {
+  display: flex;
+  justify-content: space-between;
+}
+#galleryMode nav a {
+  color: #333;
+  display: inline-block;
+  padding: 0.2em 2.4em;
+}
+
+/* ================== *\
+|*   Contros & Meta   *|
+\* ================== */
+
+/* ---- Stats  */
 
 .stats {
   position: absolute;
   right: 0;
   bottom: 0;
-  padding: 1em 1.2em;
+  padding: 1.4rem 1.7rem;
   font-size: 1.7777em;
   text-transform: uppercase;
   color: #474747;
@@ -83,4 +147,19 @@ body {
   min-width: 2em;
   text-align: left;
   color: #000;
+}
+
+/* ---- Controls  */
+
+.controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 2rem 2.2rem;
+}
+.controls button {
+  padding: 0.4em 0.7em;
+  font-size: 1.7777em;
+  text-transform: uppercase;
+  background-color: var(--bgc);
 }
