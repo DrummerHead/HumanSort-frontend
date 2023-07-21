@@ -1,4 +1,4 @@
-import type { Rank, RankMeta } from './types';
+import type { Rank, RankMeta, DBRank } from './types';
 import { defaultRank } from './defaultObjects';
 
 export const getPivot = (ranks: RankMeta[]): RankMeta =>
@@ -51,3 +51,6 @@ export const setFreshRankMeta = (ranks: Rank[]): RankMeta[] => {
     name: pathToName(rank.path),
   }));
 };
+
+export const leanRankings = (rankings: RankMeta[]): DBRank[] =>
+  rankings.map(({ rank, picId, rankedOn }) => ({ rank, picId, rankedOn }));

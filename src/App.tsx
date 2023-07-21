@@ -9,7 +9,13 @@ import type {
   RankMeta,
   OneNonRankedReponse,
 } from './types';
-import { getPivot, today, setFreshRankMeta, rankClass } from './tinyFunctions';
+import {
+  getPivot,
+  today,
+  setFreshRankMeta,
+  rankClass,
+  leanRankings,
+} from './tinyFunctions';
 import { defaultPic, defaultRank } from './defaultObjects';
 import { binaryCompare } from './binaryCompare';
 import { constrainRank } from './constrainRank';
@@ -93,7 +99,7 @@ function App() {
       setRanking(rankings);
       if (newPicInserted) {
         axios
-          .post<PostRankResponse>('/api/v1/ranking', rankings)
+          .post<PostRankResponse>('/api/v1/ranking', leanRankings(rankings))
           .then(function (response) {
             setRankedAmount(response.data.rankedAmount);
             console.log('POST /api/v1/ranking response:');

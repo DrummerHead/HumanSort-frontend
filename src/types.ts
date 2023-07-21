@@ -16,6 +16,12 @@ export interface Rank extends Pic {
   rankedOn: string;
 }
 
+export interface DBRank {
+  rank: number;
+  picId: number;
+  rankedOn: string;
+}
+
 export interface RankResponse extends Success, RankedAmount {
   ranks: Rank[];
 }
