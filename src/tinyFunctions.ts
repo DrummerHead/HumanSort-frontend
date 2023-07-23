@@ -55,3 +55,9 @@ export const setFreshRankMeta = (ranks: Rank[]): RankMeta[] => {
 // Marked for deletion
 export const leanRankings = (rankings: RankMeta[]): DBRank[] =>
   rankings.map(({ rank, picId, rankedOn }) => ({ rank, picId, rankedOn }));
+
+export const leftPressed = (ev: KeyboardEvent) =>
+  ev.key === 'ArrowLeft' || ev.key === 'a';
+
+export const rightPressed = (ev: KeyboardEvent) =>
+  ev.key === 'ArrowRight' || ev.key === 'd';

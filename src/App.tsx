@@ -9,7 +9,14 @@ import type {
   RankMeta,
   OneNonRankedReponse,
 } from './types';
-import { getPivot, today, setFreshRankMeta, rankClass } from './tinyFunctions';
+import {
+  getPivot,
+  today,
+  setFreshRankMeta,
+  rankClass,
+  leftPressed,
+  rightPressed,
+} from './tinyFunctions';
 import { defaultPic, defaultRank } from './defaultObjects';
 import { binaryCompare } from './binaryCompare';
 import { constrainRank } from './constrainRank';
@@ -92,9 +99,9 @@ function App() {
   // On key down set highlight on either left or right
   useEffect(() => {
     const keyHandler = (ev: KeyboardEvent): void => {
-      if (ev.key === 'ArrowLeft') {
+      if (leftPressed(ev)) {
         setLeftHighlight(true);
-      } else if (ev.key === 'ArrowRight') {
+      } else if (rightPressed(ev)) {
         setrightHighlight(true);
       }
     };
@@ -144,10 +151,10 @@ function App() {
     };
 
     const keyHandler = (ev: KeyboardEvent): void => {
-      if (ev.key === 'ArrowLeft') {
+      if (leftPressed(ev)) {
         choose(true);
         setLeftHighlight(false);
-      } else if (ev.key === 'ArrowRight') {
+      } else if (rightPressed(ev)) {
         choose(false);
         setrightHighlight(false);
       }
@@ -225,7 +232,7 @@ function App() {
           </ol>
           <nav>
             <a href={`#rank${ranking.length}`}>last</a>
-            <a href={`#rank${pivot.rank}`}>center</a>
+            <a href={`#rank${pivot.rank}`}>pivot</a>
             <a href={`#rank1`}>first</a>
           </nav>
         </div>
