@@ -9,13 +9,7 @@ import type {
   RankMeta,
   OneNonRankedReponse,
 } from './types';
-import {
-  getPivot,
-  today,
-  setFreshRankMeta,
-  rankClass,
-  leanRankings,
-} from './tinyFunctions';
+import { getPivot, today, setFreshRankMeta, rankClass } from './tinyFunctions';
 import { defaultPic, defaultRank } from './defaultObjects';
 import { binaryCompare } from './binaryCompare';
 import { constrainRank } from './constrainRank';
@@ -49,6 +43,9 @@ function App() {
       });
   };
 
+  // Get the first one non ranked pic on load
+  // In case there are no unraked pictures left to rank,
+  // reach final state of all pics ranked and only allow access to gallery
   useEffect(() => {
     getOneNoneRanked((respData) => {
       setNewPic(respData.newPic);
@@ -61,8 +58,11 @@ function App() {
     });
   }, []);
 
+  // Get all rankings,
+  // if no picture has been ranked (initial never used state)
+  // then get one non ranked picture and set it as ranked first
+  // after first comparison we will have ranking of 1 and 2
   useEffect(() => {
-    // Get all rankings
     axios
       .get<RankResponse>('/api/v1/ranking')
       .then(function (response) {
@@ -89,12 +89,32 @@ function App() {
       });
   }, []);
 
+  // On key down set highlight on either left or right
   useEffect(() => {
+    const keyHandler = (ev: KeyboardEvent): void => {
+      if (ev.key === 'ArrowLeft') {
+        setLeftHighlight(true);
+      } else if (ev.key === 'ArrowRight') {
+        setrightHighlight(true);
+      }
+    };
+    compareMode && document.addEventListener('keydown', keyHandler);
+    return () => {
+      compareMode && document.removeEventListener('keydown', keyHandler);
+    };
+  }, [compareMode]);
+
+  // On key up choose picture and remove higlight
+  useEffect(() => {
+    // Determine whether new non ranked pic or ranked pic is better
     const choose = (newPicIsBetter: boolean): void => {
       const bc = binaryCompare(newPic, ranking, newPicIsBetter);
+      // Set the rankings according to position of pic
       setRanking(bc.rankings);
 
+      // At some point the final position of pic is determined
       if (bc.newPicInserted) {
+        // Post it to backend
         axios
           .post<PostRankResponse>('/api/v1/one-ranking', bc.newPicWithMeta)
           .then(function (response) {
@@ -102,6 +122,9 @@ function App() {
             console.log('POST /api/v1/ranking response:');
             console.log(response.data);
           })
+          // And get a new pic to compare
+          // In case there are no unraked pictures left to rank,
+          // reach final state of all pics ranked and only allow access to gallery
           .then(function () {
             getOneNoneRanked((respData) => {
               setNewPic(respData.newPic);
@@ -122,29 +145,18 @@ function App() {
 
     const keyHandler = (ev: KeyboardEvent): void => {
       if (ev.key === 'ArrowLeft') {
-        setLeftHighlight(true);
         choose(true);
+        setLeftHighlight(false);
       } else if (ev.key === 'ArrowRight') {
-        setrightHighlight(true);
         choose(false);
+        setrightHighlight(false);
       }
-    };
-    compareMode && document.addEventListener('keydown', keyHandler);
-    return () => {
-      compareMode && document.removeEventListener('keydown', keyHandler);
-    };
-  }, [newPic, ranking, compareMode]);
-
-  useEffect(() => {
-    const keyHandler = (ev: KeyboardEvent): void => {
-      setLeftHighlight(false);
-      setrightHighlight(false);
     };
     compareMode && document.addEventListener('keyup', keyHandler);
     return () => {
       compareMode && document.removeEventListener('keyup', keyHandler);
     };
-  }, [compareMode]);
+  }, [newPic, ranking, compareMode]);
 
   return (
     <div>

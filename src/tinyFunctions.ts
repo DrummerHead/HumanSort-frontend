@@ -52,5 +52,6 @@ export const setFreshRankMeta = (ranks: Rank[]): RankMeta[] => {
   }));
 };
 
+// Marked for deletion
 export const leanRankings = (rankings: RankMeta[]): DBRank[] =>
   rankings.map(({ rank, picId, rankedOn }) => ({ rank, picId, rankedOn }));
