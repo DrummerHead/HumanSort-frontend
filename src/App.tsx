@@ -121,7 +121,11 @@ function App() {
 
       // At some point the final position of pic is determined
       if (bc.newPicInserted) {
-        // Post it to backend
+        // In special case of empty initial state, also have to post ranking pic
+        if (rankedAmount === 0) {
+          axios.post<PostRankResponse>('/api/v1/one-ranking', ranking[0]);
+        }
+        // Post newPicWithMeta to backend
         axios
           .post<PostRankResponse>('/api/v1/one-ranking', bc.newPicWithMeta)
           .then(function (response) {
@@ -163,7 +167,7 @@ function App() {
     return () => {
       compareMode && document.removeEventListener('keyup', keyHandler);
     };
-  }, [newPic, ranking, compareMode]);
+  }, [newPic, ranking, compareMode, rankedAmount]);
 
   return (
     <div>
