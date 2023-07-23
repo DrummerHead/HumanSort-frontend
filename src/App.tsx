@@ -91,15 +91,12 @@ function App() {
 
   useEffect(() => {
     const choose = (newPicIsBetter: boolean): void => {
-      const { rankings, newPicInserted } = binaryCompare(
-        newPic,
-        ranking,
-        newPicIsBetter
-      );
-      setRanking(rankings);
-      if (newPicInserted) {
+      const bc = binaryCompare(newPic, ranking, newPicIsBetter);
+      setRanking(bc.rankings);
+
+      if (bc.newPicInserted) {
         axios
-          .post<PostRankResponse>('/api/v1/ranking', leanRankings(rankings))
+          .post<PostRankResponse>('/api/v1/one-ranking', bc.newPicWithMeta)
           .then(function (response) {
             setRankedAmount(response.data.rankedAmount);
             console.log('POST /api/v1/ranking response:');

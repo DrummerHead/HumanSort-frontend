@@ -7,10 +7,19 @@ import {
 } from './tinyFunctions';
 import { defaultRank } from './defaultObjects';
 
-interface BinaryCompareReturn {
+interface BinaryCompareReturnWithoutNew {
   rankings: RankMeta[];
-  newPicInserted: boolean;
+  newPicInserted: false;
 }
+interface BinaryCompareReturnWithNew {
+  rankings: RankMeta[];
+  newPicInserted: true;
+  newPicWithMeta: RankMeta;
+}
+type BinaryCompareReturn =
+  | BinaryCompareReturnWithoutNew
+  | BinaryCompareReturnWithNew;
+
 export const binaryCompare = (
   picToCompare: Pic,
   ranking: RankMeta[],
@@ -27,27 +36,28 @@ export const binaryCompare = (
   );
 
   if (newIncast.length === 0) {
+    const newPicWithMeta: RankMeta = {
+      ...picToCompare,
+      name: pathToName(picToCompare.path),
+      rank: isPicToCompareBetterThanPivot ? pivot.rank : pivot.rank + 1,
+      rankedOn: today,
+      outcast: false,
+      pivot: false,
+    };
+    const newPivot: RankMeta = {
+      ...pivot,
+      rank: isPicToCompareBetterThanPivot ? pivot.rank + 1 : pivot.rank,
+    };
+
     const rankingsWithNewPic: RankMeta[] = ranking.reduce<RankMeta[]>(
       (acc, curr) => {
         if (curr.rank < pivot.rank) {
           return [...acc, curr];
         }
         if (curr.rank === pivot.rank) {
-          const picWithMeta: RankMeta = {
-            ...picToCompare,
-            name: pathToName(picToCompare.path),
-            rank: isPicToCompareBetterThanPivot ? pivot.rank : pivot.rank + 1,
-            rankedOn: today,
-            outcast: false,
-            pivot: false,
-          };
-          const newPivot = {
-            ...pivot,
-            rank: isPicToCompareBetterThanPivot ? pivot.rank + 1 : pivot.rank,
-          };
           return isPicToCompareBetterThanPivot
-            ? [...acc, picWithMeta, newPivot]
-            : [...acc, newPivot, picWithMeta];
+            ? [...acc, newPicWithMeta, newPivot]
+            : [...acc, newPivot, newPicWithMeta];
         }
         if (curr.rank > pivot.rank) {
           return [
@@ -66,6 +76,7 @@ export const binaryCompare = (
     return {
       rankings: setFreshRankMeta(rankingsWithNewPic),
       newPicInserted: true,
+      newPicWithMeta,
     };
   }
 
