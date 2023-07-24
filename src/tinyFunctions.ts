@@ -61,3 +61,6 @@ export const leftPressed = (ev: KeyboardEvent) =>
 
 export const rightPressed = (ev: KeyboardEvent) =>
   ev.key === 'ArrowRight' || ev.key === 'd';
+
+export const rankingInProcess = (ranking: RankMeta[]) =>
+  ranking.some((r) => r.outcast);
