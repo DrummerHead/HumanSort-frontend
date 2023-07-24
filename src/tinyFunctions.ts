@@ -1,4 +1,4 @@
-import type { Rank, RankMeta, DBRank } from './types';
+import type { Rank, RankMeta, DBRank, RankGallery } from './types';
 import { defaultRank } from './defaultObjects';
 
 export const getPivot = (ranks: RankMeta[]): RankMeta =>
@@ -49,6 +49,18 @@ export const setFreshRankMeta = (ranks: Rank[]): RankMeta[] => {
     outcast: false,
     pivot: rank.rank === pivot + 1,
     name: pathToName(rank.path),
+  }));
+};
+
+export const setFreshRankGallery = (ranks: RankMeta[]): RankGallery[] => {
+  return ranks.map((rank) => ({
+    picId: rank.picId,
+    path: rank.path,
+    previousRank: rank.rank,
+    currentRank: rank.rank,
+    name: rank.name,
+    focused: rank.rank === 1,
+    selected: false,
   }));
 };
 

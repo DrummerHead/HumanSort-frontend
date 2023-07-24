@@ -34,6 +34,14 @@ export interface RankMeta extends Rank {
   pivot: boolean;
 }
 
+export interface RankGallery extends Pic {
+  previousRank: number;
+  currentRank: number;
+  name: string;
+  focused: boolean;
+  selected: boolean;
+}
+
 export interface OneNonRankedReponse extends Success {
   newPic: Pic;
   unrankedAmount: number;

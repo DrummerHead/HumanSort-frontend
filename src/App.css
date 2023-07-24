@@ -151,7 +151,6 @@ ol {
   flex-direction: row-reverse;
   padding: var(--ot) 0;
   overflow: scroll;
-  scroll-behavior: smooth;
 }
 .gallery li {
   position: relative;
@@ -175,6 +174,10 @@ ol {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.gallery .focused {
+  outline: var(--ot) solid var(--wt);
+  z-index: 7;
 }
 #galleryMode nav {
   display: flex;
