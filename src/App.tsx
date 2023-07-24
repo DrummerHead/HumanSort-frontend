@@ -3,17 +3,13 @@ import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 
 import type { RankResponse, RankMeta } from './types';
-import {
-  getPivot,
-  today,
-  setFreshRankMeta,
-  rankingInProcess,
-} from './tinyFunctions';
+import { today, setFreshRankMeta, rankingInProcess } from './tinyFunctions';
 import { getOneNoneRanked } from './apiCalls';
 import { defaultRank } from './defaultObjects';
 import './App.css';
 
 import CompareMode from './CompareMode';
+import GalleryMode from './GalleryMode';
 
 const App = () => {
   const [ranking, setRanking] = useState<RankMeta[]>([defaultRank]);
@@ -21,7 +17,6 @@ const App = () => {
   const [unrankedAmount, setUnrankedAmount] = useState<number>(0);
   const [compareMode, setCompareMode] = useState<boolean>(true);
   const [finalState, setFinalState] = useState<boolean>(false);
-  const pivot: RankMeta = getPivot(ranking);
 
   // Get all rankings,
   // if no picture has been ranked (initial never used state)
@@ -67,22 +62,7 @@ const App = () => {
           setCompareMode={setCompareMode}
         />
       ) : (
-        <div id="galleryMode">
-          <ol className="gallery">
-            {ranking.map((rank) => (
-              <li key={rank.rank} id={`rank${rank.rank}`}>
-                <span>{rank.rank}</span>
-                <p>{rank.name}</p>
-                <img src={rank.path} alt={rank.name} />
-              </li>
-            ))}
-          </ol>
-          <nav>
-            <a href={`#rank${ranking.length}`}>last</a>
-            <a href={`#rank${pivot.rank}`}>pivot</a>
-            <a href={`#rank1`}>first</a>
-          </nav>
-        </div>
+        <GalleryMode ranking={ranking} />
       )}
 
       <div className="stats">
