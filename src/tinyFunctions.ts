@@ -7,8 +7,7 @@ export const getPivot = (ranks: RankMeta[]): RankMeta =>
 export const findPivotIndex = <T>(array: T[]): number =>
   Math.ceil(array.length / 2) - 1;
 
-// not even a fn lol
-export const today = new Date().toISOString().split('T')[0];
+export const today = () => new Date().toISOString();
 
 export const pathToName = (path: string): string =>
   path

@@ -34,7 +34,7 @@ const App = () => {
           getOneNoneRanked((respData) => {
             setRanking(
               setFreshRankMeta([
-                { ...respData.newPic, rank: 1, rankedOn: today },
+                { ...respData.newPic, rank: 1, rankedOn: today() },
               ])
             );
           });

@@ -40,7 +40,7 @@ export const binaryCompare = (
       ...picToCompare,
       name: pathToName(picToCompare.path),
       rank: isPicToCompareBetterThanPivot ? pivot.rank : pivot.rank + 1,
-      rankedOn: today,
+      rankedOn: today(),
       outcast: false,
       pivot: false,
     };
