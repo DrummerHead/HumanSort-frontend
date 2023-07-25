@@ -18,6 +18,11 @@ ol {
   padding: 0;
   list-style-type: none;
 }
+button {
+  padding: 0.4em 0.7em;
+  text-transform: uppercase;
+  background-color: var(--bgc);
+}
 
 /* ================== *\
 |*    Compare mode    *|
@@ -151,6 +156,7 @@ ol {
   flex-direction: row-reverse;
   padding: var(--ot) 0;
   overflow: scroll;
+  scroll-behavior: smooth;
 }
 .gallery li {
   position: relative;
@@ -182,11 +188,6 @@ ol {
 #galleryMode nav {
   display: flex;
   justify-content: space-between;
-}
-#galleryMode nav a {
-  color: #333;
-  display: inline-block;
-  padding: 0.2em 2.4em;
 }
 
 /* ================== *\
@@ -224,8 +225,5 @@ ol {
   padding: 2rem 2.2rem;
 }
 .controls button {
-  padding: 0.4em 0.7em;
   font-size: 1.7777em;
-  text-transform: uppercase;
-  background-color: var(--bgc);
 }

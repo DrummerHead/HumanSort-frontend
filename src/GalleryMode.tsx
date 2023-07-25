@@ -8,7 +8,7 @@ import {
 } from './tinyFunctions';
 import { defaultRankGallery } from './defaultObjects';
 
-const moveFocused = (
+const moveFocusedToSide = (
   rankGallery: RankGallery[],
   moveRight: boolean
 ): RankGallery[] => {
@@ -43,6 +43,14 @@ const moveFocused = (
   });
 };
 
+const moveFocusedToRank = (
+  rankGallery: RankGallery[],
+  rank: number
+): RankGallery[] =>
+  rankGallery.map((r) =>
+    r.previousRank === rank ? { ...r, focused: true } : { ...r, focused: false }
+  );
+
 interface GalleryModeProps {
   ranking: RankMeta[];
 }
@@ -57,9 +65,9 @@ const GalleryMode = ({ ranking }: GalleryModeProps) => {
     const keyHandler = (ev: KeyboardEvent): void => {
       ev.preventDefault();
       if (leftPressed(ev)) {
-        setRankGallery((rg) => moveFocused(rg, false));
+        setRankGallery((rg) => moveFocusedToSide(rg, false));
       } else if (rightPressed(ev)) {
-        setRankGallery((rg) => moveFocused(rg, true));
+        setRankGallery((rg) => moveFocusedToSide(rg, true));
       }
     };
     document.addEventListener('keydown', keyHandler);
@@ -71,12 +79,15 @@ const GalleryMode = ({ ranking }: GalleryModeProps) => {
   useEffect(() => {
     if (focusedElement.current) {
       focusedElement.current.scrollIntoView({
-        behavior: 'smooth',
+        behavior: 'smooth', // colludes with CSS
         block: 'center',
         inline: 'center',
       });
     }
   }, [rankGallery]);
+
+  const goTo = (rank: number) => () =>
+    setRankGallery((r) => moveFocusedToRank(r, rank));
 
   return (
     <div id="galleryMode">
@@ -84,7 +95,6 @@ const GalleryMode = ({ ranking }: GalleryModeProps) => {
         {rankGallery.map((rank) => (
           <li
             key={rank.previousRank}
-            id={`rank${rank.previousRank}`}
             className={rank.focused ? 'focused' : undefined}
             ref={rank.focused ? focusedElement : null}
           >
@@ -95,9 +105,9 @@ const GalleryMode = ({ ranking }: GalleryModeProps) => {
         ))}
       </ol>
       <nav>
-        <a href={`#rank${ranking.length}`}>last</a>
-        <a href={`#rank${pivot.rank}`}>center</a>
-        <a href={`#rank1`}>first</a>
+        <button onClick={goTo(ranking.length)}>last</button>
+        <button onClick={goTo(pivot.rank)}>center</button>
+        <button onClick={goTo(1)}>first</button>
       </nav>
     </div>
   );
