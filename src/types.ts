@@ -35,8 +35,8 @@ export interface RankMeta extends Rank {
 }
 
 export interface RankGallery extends Pic {
-  previousRank: number;
-  currentRank: number;
+  originalRank: number;
+  newRank: number;
   name: string;
   focused: boolean;
   selected: boolean;

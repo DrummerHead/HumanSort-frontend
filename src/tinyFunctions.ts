@@ -55,8 +55,8 @@ export const setFreshRankGallery = (ranks: RankMeta[]): RankGallery[] => {
   return ranks.map((rank) => ({
     picId: rank.picId,
     path: rank.path,
-    previousRank: rank.rank,
-    currentRank: rank.rank,
+    originalRank: rank.rank,
+    newRank: rank.rank,
     name: rank.name,
     focused: rank.rank === 1,
     selected: false,
@@ -67,11 +67,17 @@ export const setFreshRankGallery = (ranks: RankMeta[]): RankGallery[] => {
 export const leanRankings = (rankings: RankMeta[]): DBRank[] =>
   rankings.map(({ rank, picId, rankedOn }) => ({ rank, picId, rankedOn }));
 
-export const leftPressed = (ev: KeyboardEvent) =>
-  ev.key === 'ArrowLeft' || ev.key === 'a';
+export const upPressed = (ev: KeyboardEvent) =>
+  ev.key === 'ArrowUp' || ev.key === 'w';
 
 export const rightPressed = (ev: KeyboardEvent) =>
   ev.key === 'ArrowRight' || ev.key === 'd';
+
+export const downPressed = (ev: KeyboardEvent) =>
+  ev.key === 'ArrowDown' || ev.key === 's';
+
+export const leftPressed = (ev: KeyboardEvent) =>
+  ev.key === 'ArrowLeft' || ev.key === 'a';
 
 export const rankingInProcess = (ranking: RankMeta[]) =>
   ranking.some((r) => r.outcast);

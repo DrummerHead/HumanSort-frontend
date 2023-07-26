@@ -23,6 +23,9 @@ button {
   text-transform: uppercase;
   background-color: var(--bgc);
 }
+button:focus-visible {
+  outline: none;
+}
 
 /* ================== *\
 |*    Compare mode    *|
@@ -155,19 +158,31 @@ button {
   flex-flow: row nowrap;
   flex-direction: row-reverse;
   padding: var(--ot) 0;
-  overflow: scroll;
+  overflow-y: scroll;
+  padding: 4.4rem 0;
   scroll-behavior: smooth;
 }
 .gallery li {
   position: relative;
 }
-.gallery li:target {
-  outline: var(--ot) solid var(--wt);
-  z-index: 7;
-}
-.gallery span {
+.gallery .originalRank {
   font-size: 2em;
   top: 1.7rem;
+  transition: opacity 250ms ease-in-out 200ms;
+  opacity: 1;
+}
+.gallery .originalRank.rankWillBeChanged {
+  text-decoration: line-through;
+  opacity: 0.4;
+}
+.gallery .newRank {
+  top: 3.7rem;
+  font-size: 2.4em;
+  transition: opacity 500ms ease-in-out 325ms;
+  opacity: 0;
+}
+.gallery .newRank.rankWillBeChanged {
+  opacity: 1;
 }
 .gallery img {
   display: block;
@@ -181,17 +196,27 @@ button {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.gallery .focused {
+.gallery .focused,
+.gallery .selected {
   outline: var(--ot) solid var(--wt);
   z-index: 7;
+  position: relative;
+  transition: top 250ms ease-in-out;
+  top: 0;
 }
+.gallery .selected {
+  top: -4rem;
+}
+
 #galleryMode nav {
   display: flex;
   justify-content: space-between;
+  position: relative;
+  top: -3.7rem;
 }
 
 /* ================== *\
-|*   Contros & Meta   *|
+|*  Controls & Meta   *|
 \* ================== */
 
 /* ---- Stats  */

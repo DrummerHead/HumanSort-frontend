@@ -16,8 +16,8 @@ export const defaultRank: RankMeta = {
 export const defaultRankGallery: RankGallery = {
   picId: 0,
   path: loading,
-  previousRank: 1,
-  currentRank: 1,
+  originalRank: 1,
+  newRank: 1,
   name: 'loading',
   focused: false,
   selected: false,
