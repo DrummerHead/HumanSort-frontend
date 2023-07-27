@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 import type { RankMeta, RankGallery, SetState } from './types';
 import {
   getPivot,
@@ -158,13 +160,24 @@ const moveSelectedToSide = (
 // Last part of the process of reordering, happens after being in
 // moving mode and user is happy with new rank order
 //
-const establishNewRankOrder = (rankGallery: RankGallery[]): RankGallery[] =>
-  rankGallery.map((rank) => ({
+interface EstablishNewRankOrderReturn {
+  newRankGallery: RankGallery[];
+  moved: RankGallery;
+}
+const establishNewRankOrder = (
+  rankGallery: RankGallery[]
+): EstablishNewRankOrderReturn => ({
+  newRankGallery: rankGallery.map((rank) => ({
     ...rank,
     originalRank: rank.newRank,
     rankedOn: rank.selected ? today() : rank.rankedOn,
     selected: false,
-  }));
+  })),
+  moved: {
+    ...(rankGallery.find((rank) => rank.selected) || defaultRankGallery),
+    rankedOn: today(),
+  },
+});
 
 interface GalleryModeProps {
   ranking: RankMeta[];
@@ -186,10 +199,23 @@ const GalleryMode = ({ ranking, setRanking }: GalleryModeProps) => {
         setRankGallery((rg) => selectFocused(rg));
         setMovingMode(true);
       } else if (downPressed(ev)) {
-        const newRankOrder = establishNewRankOrder(rankGallery);
-        setRankGallery(newRankOrder);
+        const { newRankGallery, moved } = establishNewRankOrder(rankGallery);
+        setRankGallery(newRankGallery);
         setMovingMode(false);
-        setRanking(rankGalleryToRankMeta(newRankOrder));
+        setRanking(rankGalleryToRankMeta(newRankGallery));
+
+        if (moved.originalRank !== moved.newRank) {
+          axios
+            .post('/api/v1/new-rank-order', moved)
+            .then(function (response) {
+              console.log('POST /api/v1/new-rank-order response:');
+              console.log(response.data);
+            })
+            .catch(function (error) {
+              toast.error(error.response.data.error);
+              console.log(error);
+            });
+        }
       } else if (rightPressed(ev)) {
         setRankGallery((rg) =>
           movingMode
