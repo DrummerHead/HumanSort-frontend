@@ -42,6 +42,8 @@ export const setFreshRankMeta = (ranks: Rank[]): RankMeta[] => {
   // We assume that all ranks exist from 1 to n and in this case
   // length maps to minimum rank so we can find the ranked pic
   // in the middle of the pack
+  // 0 1 2 3 4 5 6 7
+  // 1 2 3 4 5 6 7 8
   const pivot = findPivotIndex(ranks);
   return ranks.map((rank) => ({
     ...rank,
@@ -51,15 +53,30 @@ export const setFreshRankMeta = (ranks: Rank[]): RankMeta[] => {
   }));
 };
 
-export const setFreshRankGallery = (ranks: RankMeta[]): RankGallery[] => {
-  return ranks.map((rank) => ({
+export const setFreshRankGallery = (ranks: RankMeta[]): RankGallery[] =>
+  ranks.map((rank) => ({
     picId: rank.picId,
     path: rank.path,
     originalRank: rank.rank,
     newRank: rank.rank,
     name: rank.name,
+    rankedOn: rank.rankedOn,
     focused: rank.rank === 1,
     selected: false,
+  }));
+
+export const rankGalleryToRankMeta = (
+  rankGallery: RankGallery[]
+): RankMeta[] => {
+  const pivot = findPivotIndex(rankGallery);
+  return rankGallery.map((rank) => ({
+    picId: rank.picId,
+    path: rank.path,
+    name: rank.name,
+    rank: rank.originalRank,
+    rankedOn: rank.rankedOn,
+    outcast: false,
+    pivot: rank.originalRank === pivot + 1,
   }));
 };
 

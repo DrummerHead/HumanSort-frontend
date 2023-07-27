@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import type { Dispatch, SetStateAction } from 'react';
 import toast from 'react-hot-toast';
 
-import type { Pic, RankMeta, PostRankResponse } from './types';
+import type { Pic, RankMeta, PostRankResponse, SetState } from './types';
 import { binaryCompare } from './binaryCompare';
 import {
   getPivot,
@@ -14,8 +13,6 @@ import {
 import { getOneNoneRanked } from './apiCalls';
 import { constrainRank } from './constrainRank';
 import { defaultPic } from './defaultObjects';
-
-type SetState<T> = Dispatch<SetStateAction<T>>;
 
 interface CompareModeProps {
   ranking: RankMeta[];

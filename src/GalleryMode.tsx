@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import type { RankMeta, RankGallery } from './types';
+import type { RankMeta, RankGallery, SetState } from './types';
 import {
   getPivot,
   setFreshRankGallery,
+  today,
   upPressed,
   rightPressed,
   downPressed,
   leftPressed,
+  rankGalleryToRankMeta,
 } from './tinyFunctions';
 import { defaultRankGallery } from './defaultObjects';
 
@@ -160,13 +162,15 @@ const establishNewRankOrder = (rankGallery: RankGallery[]): RankGallery[] =>
   rankGallery.map((rank) => ({
     ...rank,
     originalRank: rank.newRank,
+    rankedOn: rank.selected ? today() : rank.rankedOn,
     selected: false,
   }));
 
 interface GalleryModeProps {
   ranking: RankMeta[];
+  setRanking: SetState<RankMeta[]>;
 }
-const GalleryMode = ({ ranking }: GalleryModeProps) => {
+const GalleryMode = ({ ranking, setRanking }: GalleryModeProps) => {
   const [rankGallery, setRankGallery] = useState<RankGallery[]>(
     setFreshRankGallery(ranking)
   );
@@ -182,8 +186,10 @@ const GalleryMode = ({ ranking }: GalleryModeProps) => {
         setRankGallery((rg) => selectFocused(rg));
         setMovingMode(true);
       } else if (downPressed(ev)) {
-        setRankGallery((rg) => establishNewRankOrder(rg));
+        const newRankOrder = establishNewRankOrder(rankGallery);
+        setRankGallery(newRankOrder);
         setMovingMode(false);
+        setRanking(rankGalleryToRankMeta(newRankOrder));
       } else if (rightPressed(ev)) {
         setRankGallery((rg) =>
           movingMode
@@ -202,7 +208,7 @@ const GalleryMode = ({ ranking }: GalleryModeProps) => {
     return () => {
       document.removeEventListener('keydown', keyHandler);
     };
-  }, [movingMode]);
+  }, [movingMode, rankGallery, setRanking]);
 
   useEffect(() => {
     if (focusedElement.current) {

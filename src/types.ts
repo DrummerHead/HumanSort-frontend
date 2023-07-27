@@ -1,3 +1,5 @@
+import type { Dispatch, SetStateAction } from 'react';
+
 interface Success {
   message: 'success';
 }
@@ -38,6 +40,7 @@ export interface RankGallery extends Pic {
   originalRank: number;
   newRank: number;
   name: string;
+  rankedOn: string;
   focused: boolean;
   selected: boolean;
 }
@@ -46,3 +49,5 @@ export interface OneNonRankedReponse extends Success {
   newPic: Pic;
   unrankedAmount: number;
 }
+
+export type SetState<T> = Dispatch<SetStateAction<T>>;

@@ -19,6 +19,7 @@ export const defaultRankGallery: RankGallery = {
   originalRank: 1,
   newRank: 1,
   name: 'loading',
+  rankedOn: '2023-07-17',
   focused: false,
   selected: false,
 };

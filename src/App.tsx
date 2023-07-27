@@ -62,7 +62,7 @@ const App = () => {
           setCompareMode={setCompareMode}
         />
       ) : (
-        <GalleryMode ranking={ranking} />
+        <GalleryMode ranking={ranking} setRanking={setRanking} />
       )}
 
       <div className="stats">
