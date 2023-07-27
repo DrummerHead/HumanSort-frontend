@@ -87,6 +87,13 @@ const App = () => {
         >
           Gallery
         </button>
+        <button
+          className="smaller separated"
+          onClick={() => setRanking((r) => setFreshRankMeta(r))}
+          disabled={!compareMode}
+        >
+          🔄
+        </button>
       </div>
 
       <Toaster />
