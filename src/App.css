@@ -201,7 +201,7 @@ button:focus-visible {
   outline: var(--ot) solid var(--wt);
   z-index: 7;
   position: relative;
-  transition: top 250ms ease-in-out;
+  transition: top 250ms ease-out;
   top: 0;
 }
 .gallery .selected {

@@ -10,8 +10,21 @@ import {
 } from './tinyFunctions';
 import { defaultRankGallery } from './defaultObjects';
 
+//
+// in non moving mode (represented by movingMode:boolean state inside
+// GalleryMode React component) we move the focus of RankGallery to navigate
+// towards the image whose rank we believe must either upgrade or demote
+//
+// in moving mode we have already focused a RankGallery and are ready to
+// move it left or right in order to decide on the new rank
+//
+// When mentioning "subject" below it is referring to either the focused
+// or the selected RankMeta
+//
+
 // Predicate to determine if we should not do any modifications because
 // user wants to move past the edges, either first place or last
+//
 const itWantsToMovePastTheEdge = (
   moveRight: boolean,
   subjectRank: number,
@@ -23,14 +36,19 @@ const itWantsToMovePastTheEdge = (
 // Predicate to determine if the RankGallery object to the side
 // of the subject (eithed focused or selected) is the one that has to
 // be modified in some way.
+//
 const itIsTheNonSubjectBeingModified = (
   moveRight: boolean,
   nonSubjectRank: number,
   subjectRank: number
-) =>
+): boolean =>
   (moveRight && nonSubjectRank === subjectRank - 1) ||
   (!moveRight && nonSubjectRank === subjectRank + 1);
 
+// In non moving mode, move focused RankMeta to either the
+// right or left to navigate around the gallery to eventually
+// select one to move
+//
 const moveFocusedToSide = (
   rankGallery: RankGallery[],
   moveRight: boolean
@@ -72,6 +90,9 @@ const moveFocusedToSide = (
   });
 };
 
+// Jump focus to any specific rank, used by navigation buttons
+// last, center, first
+//
 const moveFocusedToRank = (
   rankGallery: RankGallery[],
   rank: number
@@ -80,9 +101,15 @@ const moveFocusedToRank = (
     r.originalRank === rank ? { ...r, focused: true } : { ...r, focused: false }
   );
 
+// Upgrade focused to selected to being moving it and changing order
+//
 const selectFocused = (rankGallery: RankGallery[]): RankGallery[] =>
   rankGallery.map((r) => (r.focused ? { ...r, selected: true } : r));
 
+// In moving mode, move selected RankMeta to either the
+// right or left to change order of ranking and eventually
+// decide on an order
+//
 const moveSelectedToSide = (
   rankGallery: RankGallery[],
   moveRight: boolean
@@ -126,6 +153,16 @@ const moveSelectedToSide = (
     .sort((a, b) => a.newRank - b.newRank);
 };
 
+// Last part of the process of reordering, happens after being in
+// moving mode and user is happy with new rank order
+//
+const establishNewRankOrder = (rankGallery: RankGallery[]): RankGallery[] =>
+  rankGallery.map((rank) => ({
+    ...rank,
+    originalRank: rank.newRank,
+    selected: false,
+  }));
+
 interface GalleryModeProps {
   ranking: RankMeta[];
 }
@@ -144,6 +181,9 @@ const GalleryMode = ({ ranking }: GalleryModeProps) => {
       if (upPressed(ev)) {
         setRankGallery((rg) => selectFocused(rg));
         setMovingMode(true);
+      } else if (downPressed(ev)) {
+        setRankGallery((rg) => establishNewRankOrder(rg));
+        setMovingMode(false);
       } else if (rightPressed(ev)) {
         setRankGallery((rg) =>
           movingMode
@@ -156,8 +196,6 @@ const GalleryMode = ({ ranking }: GalleryModeProps) => {
             ? moveSelectedToSide(rg, false)
             : moveFocusedToSide(rg, false)
         );
-      } else if (downPressed(ev)) {
-        console.log('down');
       }
     };
     document.addEventListener('keydown', keyHandler);
@@ -186,7 +224,7 @@ const GalleryMode = ({ ranking }: GalleryModeProps) => {
           const rankModified = rank.originalRank !== rank.newRank;
           return (
             <li
-              key={rank.originalRank}
+              key={rank.newRank}
               className={
                 rank.selected
                   ? 'selected'
@@ -217,9 +255,15 @@ const GalleryMode = ({ ranking }: GalleryModeProps) => {
         })}
       </ol>
       <nav>
-        <button onClick={goTo(ranking.length)}>last</button>
-        <button onClick={goTo(pivot.rank)}>center</button>
-        <button onClick={goTo(1)}>first</button>
+        <button onClick={goTo(ranking.length)} disabled={movingMode}>
+          last
+        </button>
+        <button onClick={goTo(pivot.rank)} disabled={movingMode}>
+          center
+        </button>
+        <button onClick={goTo(1)} disabled={movingMode}>
+          first
+        </button>
       </nav>
     </div>
   );
