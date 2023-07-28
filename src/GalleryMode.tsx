@@ -121,7 +121,11 @@ const GalleryMode = ({ ranking, setRanking }: GalleryModeProps) => {
                 {rank.newRank}
               </span>
               <p>{rank.name}</p>
-              <img src={rank.path} alt={rank.name} />
+              <img
+                src={rank.path}
+                alt={rank.name}
+                onClick={movingMode ? () => null : goTo(rank.newRank)}
+              />
             </li>
           );
         })}
