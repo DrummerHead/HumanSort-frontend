@@ -88,13 +88,13 @@ export const upPressed = (ev: KeyboardEvent) =>
   ev.key === 'ArrowUp' || ev.key === 'w';
 
 export const rightPressed = (ev: KeyboardEvent) =>
-  ev.key === 'ArrowRight' || ev.key === 'd';
+  ev.key === 'ArrowRight' || ev.key === 'd' || ev.code === 'ShiftRight';
 
 export const downPressed = (ev: KeyboardEvent) =>
   ev.key === 'ArrowDown' || ev.key === 's';
 
 export const leftPressed = (ev: KeyboardEvent) =>
-  ev.key === 'ArrowLeft' || ev.key === 'a';
+  ev.key === 'ArrowLeft' || ev.key === 'a' || ev.code === 'ShiftLeft';
 
 export const rankingInProcess = (ranking: RankMeta[]) =>
   ranking.some((r) => r.outcast);
