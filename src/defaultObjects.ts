@@ -1,4 +1,5 @@
-import type { Pic, RankMeta, RankGallery } from './types';
+import type { Pic } from './shared/types';
+import type { RankMeta, RankGallery } from './types';
 import loading from './images/loading.png';
 
 export const defaultPic: Pic = { picId: 0, path: loading };

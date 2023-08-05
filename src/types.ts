@@ -1,34 +1,9 @@
 import type { Dispatch, SetStateAction } from 'react';
+import type { Pic, RankRow } from './shared/types';
 
-interface Success {
-  message: 'success';
-}
+export type SetState<T> = Dispatch<SetStateAction<T>>;
 
-interface RankedAmount {
-  rankedAmount: number;
-}
-
-export interface Pic {
-  picId: number;
-  path: string;
-}
-
-export interface Rank extends Pic {
-  rank: number;
-  rankedOn: string;
-}
-
-export interface DBRank {
-  rank: number;
-  picId: number;
-  rankedOn: string;
-}
-
-export interface RankResponse extends Success, RankedAmount {
-  ranks: Rank[];
-}
-
-export interface PostRankResponse extends Success, RankedAmount {}
+export type Rank = Pic & RankRow;
 
 export interface RankMeta extends Rank {
   name: string;
@@ -44,10 +19,3 @@ export interface RankGallery extends Pic {
   focused: boolean;
   selected: boolean;
 }
-
-export interface OneNonRankedReponse extends Success {
-  newPic: Pic;
-  unrankedAmount: number;
-}
-
-export type SetState<T> = Dispatch<SetStateAction<T>>;

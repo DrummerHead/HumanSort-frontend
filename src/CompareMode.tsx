@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-import type { Pic, RankMeta, SetState } from './types';
+import type { Pic } from './shared/types';
+import type { RankMeta, SetState } from './types';
 import type {
   OneRankingResponseSuccess,
   OneRankingRequestBody,

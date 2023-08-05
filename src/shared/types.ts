@@ -14,7 +14,7 @@ CREATE TABLE pics (
 
 type DateString = string;
 
-interface PicRow {
+export interface PicRow {
   picId: number;
   path: string;
   addedOn: DateString;
@@ -35,7 +35,7 @@ CREATE TABLE ranking (
 
 */
 
-interface RankRow {
+export interface RankRow {
   rank: number;
   picId: number;
   rankedOn: DateString;
@@ -52,7 +52,7 @@ export type RankShift = {
   originalRank: number;
 } & Pick<RankRow, 'rankedOn'>;
 
-export type LeanPic = Pick<PicRow, 'picId' | 'path'>;
+export type Pic = Pick<PicRow, 'picId' | 'path'>;
 
 /*
  * ============= API =============
@@ -102,7 +102,7 @@ export type OneRankingResponse = OneRankingResponseSuccess | ResponseError;
  */
 
 // Response
-export type OneNonRankedResponseSuccess = ResponseSuccess<LeanPic, number>;
+export type OneNonRankedResponseSuccess = ResponseSuccess<Pic, number>;
 export type OneNonRankedResponse = OneNonRankedResponseSuccess | ResponseError;
 
 /*

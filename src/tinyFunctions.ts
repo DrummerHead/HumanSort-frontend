@@ -1,4 +1,4 @@
-import type { Rank, RankMeta, DBRank, RankGallery } from './types';
+import type { Rank, RankMeta, RankGallery } from './types';
 import { defaultRank } from './defaultObjects';
 
 export const getPivot = (ranks: RankMeta[]): RankMeta =>
@@ -79,10 +79,6 @@ export const rankGalleryToRankMeta = (
     pivot: rank.originalRank === pivot + 1,
   }));
 };
-
-// Marked for deletion
-export const leanRankings = (rankings: RankMeta[]): DBRank[] =>
-  rankings.map(({ rank, picId, rankedOn }) => ({ rank, picId, rankedOn }));
 
 export const upPressed = (ev: KeyboardEvent) =>
   ev.key === 'ArrowUp' || ev.key === 'w';
