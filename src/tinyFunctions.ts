@@ -7,7 +7,7 @@ export const getPivot = (ranks: RankMeta[]): RankMeta =>
 export const findPivotIndex = <T>(array: T[]): number =>
   Math.ceil(array.length / 2) - 1;
 
-export const today = () => new Date().toISOString();
+export const today = (): string => new Date().toISOString();
 
 export const pathToName = (path: string): string =>
   path
@@ -80,17 +80,17 @@ export const rankGalleryToRankMeta = (
   }));
 };
 
-export const upPressed = (ev: KeyboardEvent) =>
+export const upPressed = (ev: KeyboardEvent): boolean =>
   ev.key === 'ArrowUp' || ev.key === 'w';
 
-export const rightPressed = (ev: KeyboardEvent) =>
+export const rightPressed = (ev: KeyboardEvent): boolean =>
   ev.key === 'ArrowRight' || ev.key === 'd' || ev.code === 'ShiftRight';
 
-export const downPressed = (ev: KeyboardEvent) =>
+export const downPressed = (ev: KeyboardEvent): boolean =>
   ev.key === 'ArrowDown' || ev.key === 's';
 
-export const leftPressed = (ev: KeyboardEvent) =>
+export const leftPressed = (ev: KeyboardEvent): boolean =>
   ev.key === 'ArrowLeft' || ev.key === 'a' || ev.code === 'ShiftLeft';
 
-export const rankingInProcess = (ranking: RankMeta[]) =>
+export const rankingInProcess = (ranking: RankMeta[]): boolean =>
   ranking.some((r) => r.outcast);
