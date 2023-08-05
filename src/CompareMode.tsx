@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-import type { Pic, RankMeta, PostRankResponse, SetState } from './types';
+import type { Pic, RankMeta, SetState } from './types';
+import type {
+  OneRankingResponseSuccess,
+  OneRankingRequestBody,
+} from './shared/types';
+import type { AxiosResponse } from 'axios';
+
 import { binaryCompare } from './binaryCompare';
 import {
   getPivot,
@@ -42,9 +48,9 @@ const CompareMode = ({
   // reach final state of all pics ranked and only allow access to gallery
   useEffect(() => {
     getOneNoneRanked((respData) => {
-      setNewPic(respData.newPic);
-      setUnrankedAmount(respData.unrankedAmount);
-      if (respData.unrankedAmount === 0) {
+      setNewPic(respData.payload);
+      setUnrankedAmount(respData.meta);
+      if (respData.meta === 0) {
         setFinalState(true);
         toast.success('All of the images are ranked! You did it!');
         setCompareMode(false);
@@ -79,14 +85,22 @@ const CompareMode = ({
       if (bc.newPicInserted) {
         // In special case of empty initial state, also have to post ranking pic
         if (rankedAmount === 0) {
-          axios.post<PostRankResponse>('/api/v1/one-ranking', ranking[0]);
+          axios.post<
+            OneRankingResponseSuccess,
+            AxiosResponse<OneRankingResponseSuccess>,
+            OneRankingRequestBody
+          >('/api/v1/one-ranking', ranking[0]);
         }
         // Post newPicWithMeta to backend
         axios
-          .post<PostRankResponse>('/api/v1/one-ranking', bc.newPicWithMeta)
+          .post<
+            OneRankingResponseSuccess,
+            AxiosResponse<OneRankingResponseSuccess>,
+            OneRankingRequestBody
+          >('/api/v1/one-ranking', bc.newPicWithMeta)
           .then(function (response) {
-            setRankedAmount(response.data.rankedAmount);
-            console.log('POST /api/v1/ranking response:');
+            setRankedAmount(response.data.meta);
+            console.log('POST /api/v1/one-ranking response:');
             console.log(response.data);
           })
           // And get a new pic to compare
@@ -94,9 +108,9 @@ const CompareMode = ({
           // reach final state of all pics ranked and only allow access to gallery
           .then(function () {
             getOneNoneRanked((respData) => {
-              setNewPic(respData.newPic);
-              setUnrankedAmount(respData.unrankedAmount);
-              if (respData.unrankedAmount === 0) {
+              setNewPic(respData.payload);
+              setUnrankedAmount(respData.meta);
+              if (respData.meta === 0) {
                 toast.success('All of the images are ranked! You did it!');
                 setFinalState(true);
                 setCompareMode(false);

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import type { RankMeta, RankGallery, SetState } from './types';
+import type { AxiosResponse } from 'axios';
+
 import {
   getPivot,
   setFreshRankGallery,
@@ -18,6 +19,11 @@ import {
   moveSelectedToSide,
   establishNewRankOrder,
 } from './rankGallery';
+import type { RankMeta, RankGallery, SetState } from './types';
+import type {
+  NewRankOrderRequestBody,
+  NewRankOrderResponseSuccess,
+} from './shared/types';
 
 interface GalleryModeProps {
   ranking: RankMeta[];
@@ -46,7 +52,11 @@ const GalleryMode = ({ ranking, setRanking }: GalleryModeProps) => {
 
         if (moved.originalRank !== moved.newRank) {
           axios
-            .post('/api/v1/new-rank-order', moved)
+            .post<
+              NewRankOrderResponseSuccess,
+              AxiosResponse<NewRankOrderResponseSuccess>,
+              NewRankOrderRequestBody
+            >('/api/v1/new-rank-order', moved)
             .then(function (response) {
               console.log('POST /api/v1/new-rank-order response:');
               console.log(response.data);

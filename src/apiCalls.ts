@@ -1,14 +1,14 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-import type { OneNonRankedReponse } from './types';
+import type { OneNonRankedResponseSuccess } from './shared/types';
 
 export const getOneNoneRanked = (
-  fn: (respData: OneNonRankedReponse) => void
+  fn: (respData: OneNonRankedResponseSuccess) => void
 ): void => {
   // Get one non ranked pic
   axios
-    .get<OneNonRankedReponse>('/api/v1/one-non-ranked')
+    .get<OneNonRankedResponseSuccess>('/api/v1/one-non-ranked')
     .then(function (response) {
       fn(response.data);
       console.log('/api/v1/one-non-ranked return:');

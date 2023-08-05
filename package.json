@@ -23,6 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "prettier --write src/",
+    "sync": "cp -r ../backend/src/shared ./src/",
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:7777",

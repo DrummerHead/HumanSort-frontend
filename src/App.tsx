@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 
-import type { RankResponse, RankMeta } from './types';
+import type { RankMeta } from './types';
+import type { RankingResponseSuccess } from './shared/types';
 import { today, setFreshRankMeta, rankingInProcess } from './tinyFunctions';
 import { getOneNoneRanked } from './apiCalls';
 import { defaultRank } from './defaultObjects';
@@ -24,17 +25,17 @@ const App = () => {
   // after first comparison we will have ranking of 1 and 2
   useEffect(() => {
     axios
-      .get<RankResponse>('/api/v1/ranking')
+      .get<RankingResponseSuccess>('/api/v1/ranking')
       .then(function (response) {
-        setRankedAmount(response.data.rankedAmount);
+        setRankedAmount(response.data.meta);
 
-        if (response.data.rankedAmount > 0) {
-          setRanking(setFreshRankMeta(response.data.ranks));
+        if (response.data.meta > 0) {
+          setRanking(setFreshRankMeta(response.data.payload));
         } else {
           getOneNoneRanked((respData) => {
             setRanking(
               setFreshRankMeta([
-                { ...respData.newPic, rank: 1, rankedOn: today() },
+                { ...respData.payload, rank: 1, rankedOn: today() },
               ])
             );
           });
