@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-
-import type { Pic } from './shared/types';
-import type { RankMeta, SetState } from './types';
-import type {
-  OneRankingResponseSuccess,
-  OneRankingRequestBody,
-} from './shared/types';
 import type { AxiosResponse } from 'axios';
 
 import { binaryCompare } from './binaryCompare';
+import { constrainRank } from './constrainRank';
 import {
   getPivot,
   rankClass,
   leftPressed,
   rightPressed,
-} from './tinyFunctions';
-import { getOneNoneRanked } from './apiCalls';
-import { constrainRank } from './constrainRank';
-import { defaultPic } from './defaultObjects';
+} from '../tinyFunctions';
+import { getOneNoneRanked } from '../apiCalls';
+import { defaultPic } from '../defaultObjects';
+import type { RankMeta, SetState } from '../types';
+import type {
+  Pic,
+  OneRankingResponseSuccess,
+  OneRankingRequestBody,
+} from '../shared/types';
 
 interface CompareModeProps {
   ranking: RankMeta[];

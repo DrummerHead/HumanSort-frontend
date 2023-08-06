@@ -1,12 +1,12 @@
-import type { Pic } from './shared/types';
-import type { RankMeta } from './types';
 import {
   findPivotIndex,
   today,
   setFreshRankMeta,
   pathToName,
-} from './tinyFunctions';
-import { defaultRank } from './defaultObjects';
+} from '../tinyFunctions';
+import { defaultRank } from '../defaultObjects';
+import type { Pic } from '../shared/types';
+import type { RankMeta } from '../types';
 
 interface BinaryCompareReturnWithoutNew {
   rankings: RankMeta[];

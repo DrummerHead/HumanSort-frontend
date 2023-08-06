@@ -4,6 +4,13 @@ import toast from 'react-hot-toast';
 import type { AxiosResponse } from 'axios';
 
 import {
+  moveFocusedToSide,
+  moveFocusedToRank,
+  selectFocused,
+  moveSelectedToSide,
+  establishNewRankOrder,
+} from './rankGallery';
+import {
   getPivot,
   setFreshRankGallery,
   upPressed,
@@ -11,19 +18,12 @@ import {
   downPressed,
   leftPressed,
   rankGalleryToRankMeta,
-} from './tinyFunctions';
-import {
-  moveFocusedToSide,
-  moveFocusedToRank,
-  selectFocused,
-  moveSelectedToSide,
-  establishNewRankOrder,
-} from './rankGallery';
-import type { RankMeta, RankGallery, SetState } from './types';
+} from '../tinyFunctions';
 import type {
   NewRankOrderRequestBody,
   NewRankOrderResponseSuccess,
-} from './shared/types';
+} from '../shared/types';
+import type { RankMeta, RankGallery, SetState } from '../types';
 
 interface GalleryModeProps {
   ranking: RankMeta[];

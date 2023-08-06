@@ -1,6 +1,6 @@
-import type { RankGallery } from './types';
-import { defaultRankGallery } from './defaultObjects';
-import { today } from './tinyFunctions';
+import { defaultRankGallery } from '../defaultObjects';
+import { today } from '../tinyFunctions';
+import type { RankGallery } from '../types';
 
 //
 // in non moving mode (represented by movingMode:boolean state inside
