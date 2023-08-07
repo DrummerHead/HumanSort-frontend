@@ -61,6 +61,7 @@ button:focus-visible {
 .mainCompare img {
   max-width: 50%;
   object-fit: scale-down;
+  cursor: pointer;
 }
 
 /* ---- Ranking  */

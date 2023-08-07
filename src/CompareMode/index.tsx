@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import type { AxiosResponse } from 'axios';
@@ -40,7 +40,7 @@ const CompareMode = ({
 }: CompareModeProps) => {
   const [newPic, setNewPic] = useState<Pic>(defaultPic);
   const [leftHighlight, setLeftHighlight] = useState<boolean>(false);
-  const [rightHighlight, setrightHighlight] = useState<boolean>(false);
+  const [rightHighlight, setRightHighlight] = useState<boolean>(false);
   const pivot: RankMeta = getPivot(ranking);
 
   // Get the first one non ranked pic on load
@@ -58,25 +58,9 @@ const CompareMode = ({
     });
   }, [setCompareMode, setFinalState, setUnrankedAmount]);
 
-  // On key down set highlight on either left or right
-  useEffect(() => {
-    const keyHandler = (ev: KeyboardEvent): void => {
-      if (leftPressed(ev)) {
-        setLeftHighlight(true);
-      } else if (rightPressed(ev)) {
-        setrightHighlight(true);
-      }
-    };
-    document.addEventListener('keydown', keyHandler);
-    return () => {
-      document.removeEventListener('keydown', keyHandler);
-    };
-  }, []);
-
-  // On key up choose picture and remove higlight
-  useEffect(() => {
-    // Determine whether new non ranked pic or ranked pic is better
-    const choose = (newPicIsBetter: boolean): void => {
+  // Determine whether new non ranked pic or ranked pic is better
+  const choose = useCallback(
+    (newPicIsBetter: boolean): void => {
       const bc = binaryCompare(newPic, ranking, newPicIsBetter);
       // Set the rankings according to position of pic
       setRanking(bc.rankings);
@@ -122,31 +106,50 @@ const CompareMode = ({
             console.log(error);
           });
       }
-    };
+    },
+    [
+      newPic,
+      rankedAmount,
+      ranking,
+      setCompareMode,
+      setFinalState,
+      setRankedAmount,
+      setRanking,
+      setUnrankedAmount,
+    ]
+  );
 
+  // On key down set highlight on either left or right
+  useEffect(() => {
+    const keyHandler = (ev: KeyboardEvent): void => {
+      if (leftPressed(ev)) {
+        setLeftHighlight(true);
+      } else if (rightPressed(ev)) {
+        setRightHighlight(true);
+      }
+    };
+    document.addEventListener('keydown', keyHandler);
+    return () => {
+      document.removeEventListener('keydown', keyHandler);
+    };
+  }, []);
+
+  // On key up choose picture and remove higlight
+  useEffect(() => {
     const keyHandler = (ev: KeyboardEvent): void => {
       if (leftPressed(ev)) {
         choose(true);
         setLeftHighlight(false);
       } else if (rightPressed(ev)) {
         choose(false);
-        setrightHighlight(false);
+        setRightHighlight(false);
       }
     };
     document.addEventListener('keyup', keyHandler);
     return () => {
       document.removeEventListener('keyup', keyHandler);
     };
-  }, [
-    newPic,
-    ranking,
-    rankedAmount,
-    setRanking,
-    setCompareMode,
-    setRankedAmount,
-    setUnrankedAmount,
-    setFinalState,
-  ]);
+  }, [choose]);
 
   return (
     <div id="compareMode">
@@ -159,8 +162,20 @@ const CompareMode = ({
             : ''
         }`}
       >
-        <img src={newPic.path} alt={newPic.path} title={newPic.path} />
-        <img src={pivot.path} alt={pivot.name} title={pivot.name} />
+        <img
+          src={newPic.path}
+          onClick={() => choose(true)}
+          onMouseEnter={() => setLeftHighlight(true)}
+          onMouseLeave={() => setLeftHighlight(false)}
+          alt={newPic.path}
+        />
+        <img
+          src={pivot.path}
+          onClick={() => choose(false)}
+          onMouseEnter={() => setRightHighlight(true)}
+          onMouseLeave={() => setRightHighlight(false)}
+          alt={pivot.name}
+        />
       </div>
       <ol className={`ranking visualization ${rankClass(ranking)}`}>
         {ranking.length > 0
