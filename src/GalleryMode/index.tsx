@@ -19,11 +19,12 @@ import {
   leftPressed,
   rankGalleryToRankMeta,
 } from '../tinyFunctions';
+import KeyHints from '../KeyHints';
 import type {
   NewRankOrderRequestBody,
   NewRankOrderResponseSuccess,
 } from '../shared/types';
-import type { RankMeta, RankGallery, SetState } from '../types';
+import type { RankMeta, RankGallery, SetState, Direction } from '../types';
 
 interface GalleryModeProps {
   ranking: RankMeta[];
@@ -34,45 +35,54 @@ const GalleryMode = ({ ranking, setRanking }: GalleryModeProps) => {
     setFreshRankGallery(ranking)
   );
   const [movingMode, setMovingMode] = useState<boolean>(false);
+  const [arrowPressed, setArrowPressed] = useState<Direction>(null);
   const focusedElement = useRef<HTMLLIElement | null>(null);
   const pivot: RankMeta = getPivot(ranking);
 
   useEffect(() => {
     const keyHandler = (ev: KeyboardEvent): void => {
-      ev.preventDefault();
-
       if (upPressed(ev)) {
-        setRankGallery((rg) => selectFocused(rg));
-        setMovingMode(true);
+        if (!movingMode) {
+          setArrowPressed('up');
+          setRankGallery((rg) => selectFocused(rg));
+          setMovingMode(true);
+        }
       } else if (downPressed(ev)) {
-        const { newRankGallery, moved } = establishNewRankOrder(rankGallery);
-        setRankGallery(newRankGallery);
-        setMovingMode(false);
-        setRanking(rankGalleryToRankMeta(newRankGallery));
+        if (movingMode) {
+          setArrowPressed('down');
+          const { newRankGallery, moved } = establishNewRankOrder(rankGallery);
+          setRankGallery(newRankGallery);
+          setMovingMode(false);
+          setRanking(rankGalleryToRankMeta(newRankGallery));
 
-        if (moved.originalRank !== moved.newRank) {
-          axios
-            .post<
-              NewRankOrderResponseSuccess,
-              AxiosResponse<NewRankOrderResponseSuccess>,
-              NewRankOrderRequestBody
-            >('/api/v1/new-rank-order', moved)
-            .then(function (response) {
-              console.log('POST /api/v1/new-rank-order response:');
-              console.log(response.data);
-            })
-            .catch(function (error) {
-              toast.error(error.response.data.error);
-              console.log(error);
-            });
+          if (moved.originalRank !== moved.newRank) {
+            axios
+              .post<
+                NewRankOrderResponseSuccess,
+                AxiosResponse<NewRankOrderResponseSuccess>,
+                NewRankOrderRequestBody
+              >('/api/v1/new-rank-order', moved)
+              .then(function (response) {
+                console.log('POST /api/v1/new-rank-order response:');
+                console.log(response.data);
+              })
+              .catch(function (error) {
+                toast.error(error.response.data.error);
+                console.log(error);
+              });
+          }
         }
       } else if (rightPressed(ev)) {
+        ev.preventDefault();
+        setArrowPressed('right');
         setRankGallery((rg) =>
           movingMode
             ? moveSelectedToSide(rg, true)
             : moveFocusedToSide(rg, true)
         );
       } else if (leftPressed(ev)) {
+        ev.preventDefault();
+        setArrowPressed('left');
         setRankGallery((rg) =>
           movingMode
             ? moveSelectedToSide(rg, false)
@@ -85,6 +95,16 @@ const GalleryMode = ({ ranking, setRanking }: GalleryModeProps) => {
       document.removeEventListener('keydown', keyHandler);
     };
   }, [movingMode, rankGallery, setRanking]);
+
+  useEffect(() => {
+    const keyHandler = (): void => {
+      setArrowPressed(null);
+    };
+    document.addEventListener('keyup', keyHandler);
+    return () => {
+      document.removeEventListener('keyup', keyHandler);
+    };
+  }, []);
 
   useEffect(() => {
     if (focusedElement.current) {
@@ -151,6 +171,30 @@ const GalleryMode = ({ ranking, setRanking }: GalleryModeProps) => {
           first
         </button>
       </nav>
+      <KeyHints
+        arrows={{
+          up: {
+            hint: movingMode ? '' : 'Pick up',
+            disabled: movingMode,
+            pressed: arrowPressed === 'up',
+          },
+          right: {
+            hint: movingMode ? 'Higher rank' : 'Right',
+            disabled: false,
+            pressed: arrowPressed === 'right',
+          },
+          down: {
+            hint: movingMode ? 'Place in new rank' : '',
+            disabled: !movingMode,
+            pressed: arrowPressed === 'down',
+          },
+          left: {
+            hint: movingMode ? 'Lower rank' : 'Left',
+            disabled: false,
+            pressed: arrowPressed === 'left',
+          },
+        }}
+      />
     </div>
   );
 };

@@ -19,3 +19,5 @@ export interface RankGallery extends Pic {
   focused: boolean;
   selected: boolean;
 }
+
+export type Direction = 'up' | 'right' | 'down' | 'left' | null;

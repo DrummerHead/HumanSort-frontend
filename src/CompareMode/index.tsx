@@ -11,9 +11,10 @@ import {
   leftPressed,
   rightPressed,
 } from '../tinyFunctions';
+import KeyHints from '../KeyHints';
 import { getOneNoneRanked } from '../apiCalls';
 import { defaultPic } from '../defaultObjects';
-import type { RankMeta, SetState } from '../types';
+import type { RankMeta, SetState, Direction } from '../types';
 import type {
   Pic,
   OneRankingResponseSuccess,
@@ -39,8 +40,7 @@ const CompareMode = ({
   setCompareMode,
 }: CompareModeProps) => {
   const [newPic, setNewPic] = useState<Pic>(defaultPic);
-  const [leftHighlight, setLeftHighlight] = useState<boolean>(false);
-  const [rightHighlight, setRightHighlight] = useState<boolean>(false);
+  const [arrowPressed, setArrowPressed] = useState<Direction>(null);
   const pivot: RankMeta = getPivot(ranking);
 
   // Get the first one non ranked pic on load
@@ -123,9 +123,9 @@ const CompareMode = ({
   useEffect(() => {
     const keyHandler = (ev: KeyboardEvent): void => {
       if (leftPressed(ev)) {
-        setLeftHighlight(true);
+        setArrowPressed('left');
       } else if (rightPressed(ev)) {
-        setRightHighlight(true);
+        setArrowPressed('right');
       }
     };
     document.addEventListener('keydown', keyHandler);
@@ -139,11 +139,10 @@ const CompareMode = ({
     const keyHandler = (ev: KeyboardEvent): void => {
       if (leftPressed(ev)) {
         choose(true);
-        setLeftHighlight(false);
       } else if (rightPressed(ev)) {
         choose(false);
-        setRightHighlight(false);
       }
+      setArrowPressed(null);
     };
     document.addEventListener('keyup', keyHandler);
     return () => {
@@ -155,9 +154,9 @@ const CompareMode = ({
     <div id="compareMode">
       <div
         className={`mainCompare ${
-          leftHighlight
+          arrowPressed === 'left'
             ? 'leftHighlight'
-            : rightHighlight
+            : arrowPressed === 'right'
             ? 'rightHighlight'
             : ''
         }`}
@@ -165,15 +164,15 @@ const CompareMode = ({
         <img
           src={newPic.path}
           onClick={() => choose(true)}
-          onMouseEnter={() => setLeftHighlight(true)}
-          onMouseLeave={() => setLeftHighlight(false)}
+          onMouseEnter={() => setArrowPressed('left')}
+          onMouseLeave={() => setArrowPressed(null)}
           alt={newPic.path}
         />
         <img
           src={pivot.path}
           onClick={() => choose(false)}
-          onMouseEnter={() => setRightHighlight(true)}
-          onMouseLeave={() => setRightHighlight(false)}
+          onMouseEnter={() => setArrowPressed('right')}
+          onMouseLeave={() => setArrowPressed(null)}
           alt={pivot.name}
         />
       </div>
@@ -206,6 +205,30 @@ const CompareMode = ({
             ))
           : null}
       </ol>
+      <KeyHints
+        arrows={{
+          up: {
+            hint: '',
+            disabled: true,
+            pressed: false,
+          },
+          right: {
+            hint: 'Choose right',
+            disabled: false,
+            pressed: arrowPressed === 'right',
+          },
+          down: {
+            hint: '',
+            disabled: true,
+            pressed: false,
+          },
+          left: {
+            hint: 'Choose left',
+            disabled: false,
+            pressed: arrowPressed === 'left',
+          },
+        }}
+      />
     </div>
   );
 };
