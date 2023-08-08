@@ -1,3 +1,7 @@
+/* * * * * * * * * * * * * * * * * * * * * *
+ * All in one file, like the good old days *
+ * * * * * * * * * * * * * * * * * * * * * */
+
 /* ================== *\
 |*      General       *|
 \* ================== */
@@ -249,7 +253,7 @@ button:focus-visible {
   bottom: 0;
   left: 0;
   display: flex;
-  flex-direction: row nowrap;
+  flex-flow: row nowrap;
   align-items: center;
   padding: 2rem 2.2rem;
 }
@@ -341,4 +345,31 @@ button:focus-visible {
   left: -7.7rem;
   right: 5rem;
   text-align: right;
+}
+
+/* ================== *\
+|*        Media       *|
+\* ================== */
+
+@media (max-width: 1300px) {
+  .controls button,
+  .stats {
+    font-size: 1em;
+  }
+}
+@media (max-width: 1024px) {
+  .keyHints {
+    bottom: 7rem;
+  }
+}
+@media (max-width: 520px) {
+  .controls button,
+  .stats,
+  .keyHints,
+  .ranking {
+    display: none;
+  }
+  .mainCompare {
+    height: 100vh;
+  }
 }
