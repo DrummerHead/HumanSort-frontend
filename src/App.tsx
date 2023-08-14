@@ -17,6 +17,7 @@ const App = () => {
   const [rankedAmount, setRankedAmount] = useState<number>(0);
   const [unrankedAmount, setUnrankedAmount] = useState<number>(0);
   const [compareMode, setCompareMode] = useState<boolean>(true);
+  const [theme, setTheme] = useState<'neutral' | 'hs' | 'hsdark'>('neutral');
   const [finalState, setFinalState] = useState<boolean>(false);
 
   // Get all rankings,
@@ -50,8 +51,21 @@ const App = () => {
       });
   }, []);
 
+  const changeTheme = () => {
+    setTheme((theme) => {
+      switch (theme) {
+        case 'neutral':
+          return 'hs';
+        case 'hs':
+          return 'hsdark';
+        case 'hsdark':
+          return 'neutral';
+      }
+    });
+  };
+
   return (
-    <div>
+    <div className={`humanSort ${theme}Theme`}>
       {compareMode ? (
         <CompareMode
           ranking={ranking}
@@ -94,6 +108,9 @@ const App = () => {
           disabled={!compareMode}
         >
           🔄
+        </button>
+        <button className="smaller" onClick={changeTheme}>
+          💡
         </button>
       </div>
 

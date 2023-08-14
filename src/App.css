@@ -3,19 +3,154 @@
  * * * * * * * * * * * * * * * * * * * * * */
 
 /* ================== *\
-|*      General       *|
+|*  Theme & General   *|
 \* ================== */
 
-body {
-  --bgc: #808080;
-  --wt: #fff4d677;
-  --ot: 0.4rem;
-  background-color: var(--bgc);
+:root {
+  /* Don't use these colors directly */
+  --neutral-1: 253, 249, 244;
+  --neutral-2: 229, 224, 220;
+  --neutral-3: 205, 201, 197;
+  --neutral-4: 182, 178, 173;
+  --neutral-5: 159, 155, 151;
+  --neutral-6: 137, 133, 129;
+  --neutral-7: 115, 112, 108;
+  --neutral-8: 94, 91, 87;
+  --neutral-9: 74, 71, 67;
+  --neutral-10: 55, 52, 49;
+  --neutral-11: 37, 34, 31;
+  --neutral-12: 20, 16, 12;
+
+  --hs-1: 244, 248, 255;
+  --hs-2: 219, 223, 255; /* lightest from logo */
+  --hs-3: 194, 200, 251;
+  --hs-4: 169, 177, 247;
+  --hs-5: 145, 155, 242;
+  --hs-6: 119, 133, 237; /* intermediate from logo */
+  --hs-7: 102, 113, 220;
+  --hs-8: 85, 93, 203;
+  --hs-9: 68, 73, 186;
+  --hs-10: 51, 54, 169;
+  --hs-11: 31, 35, 152;
+  --hs-12: 0, 14, 135; /* darker from logo */
+
+  --hsdark-1: 0, 7, 72;
+  --hsdark-2: 0, 11, 107;
+  --hsdark-3: 0, 14, 135; /* darker from logo */
+  --hsdark-4: 41, 45, 161;
+  --hsdark-5: 68, 73, 186;
+  --hsdark-6: 94, 103, 212;
+  --hsdark-7: 119, 133, 237; /* intermediate from logo */
+  --hsdark-8: 145, 155, 242;
+  --hsdark-9: 169, 177, 247;
+  --hsdark-10: 194, 200, 251;
+  --hsdark-11: 219, 223, 255; /* lightest from logo */
+  --hsdark-12: 244, 248, 255;
 }
-body,
+
+.neutralTheme {
+  --color-1: var(--neutral-1);
+  --color-2: var(--neutral-2);
+  --color-3: var(--neutral-3);
+  --color-4: var(--neutral-4);
+  --color-5: var(--neutral-5);
+  --color-6: var(--neutral-6);
+  --color-7: var(--neutral-7);
+  --color-8: var(--neutral-8);
+  --color-9: var(--neutral-9);
+  --color-10: var(--neutral-10);
+  --color-11: var(--neutral-11);
+  --color-12: var(--neutral-12);
+
+  --backgroundcolor: var(--color-7);
+  --button: var(--color-7);
+  --buttonBorder: var(--color-6);
+  --highlight: rgba(var(--color-2), 0.5);
+  --readable: rgb(var(--color-12));
+  --ranking: var(--color-8);
+  --visItem: var(--color-9);
+  --visItemBorder: var(--color-10);
+  --visOutcast: var(--color-7);
+  --visPivot: var(--color-5);
+}
+
+.hsTheme {
+  --color-1: var(--hs-1);
+  --color-2: var(--hs-2);
+  --color-3: var(--hs-3);
+  --color-4: var(--hs-4);
+  --color-5: var(--hs-5);
+  --color-6: var(--hs-6);
+  --color-7: var(--hs-7);
+  --color-8: var(--hs-8);
+  --color-9: var(--hs-9);
+  --color-10: var(--hs-10);
+  --color-11: var(--hs-11);
+  --color-12: var(--hs-12);
+
+  --backgroundcolor: var(--color-2);
+  --button: var(--color-4);
+  --buttonBorder: var(--color-3);
+  --highlight: rgba(var(--color-12), 0.5);
+  --readable: rgb(var(--color-12));
+  --ranking: var(--color-3);
+  --visItem: var(--color-5);
+  --visItemBorder: var(--color-7);
+  --visOutcast: var(--color-6);
+  --visPivot: var(--color-2);
+}
+
+.hsdarkTheme {
+  --color-1: var(--hsdark-1);
+  --color-2: var(--hsdark-2);
+  --color-3: var(--hsdark-3);
+  --color-4: var(--hsdark-4);
+  --color-5: var(--hsdark-5);
+  --color-6: var(--hsdark-6);
+  --color-7: var(--hsdark-7);
+  --color-8: var(--hsdark-8);
+  --color-9: var(--hsdark-9);
+  --color-10: var(--hsdark-10);
+  --color-11: var(--hsdark-11);
+  --color-12: var(--hsdark-12);
+
+  --backgroundcolor: var(--color-1);
+  --button: var(--color-2);
+  --buttonBorder: var(--color-2);
+  --highlight: rgba(var(--color-12), 0.5);
+  --readable: rgb(var(--color-12));
+  --ranking: var(--color-3);
+  --visItem: var(--color-4);
+  --visItemBorder: var(--color-3);
+  --visOutcast: var(--color-1);
+  --visPivot: var(--color-7);
+}
+
+* {
+  --tSpeed: 250ms;
+  --tAlgo: ease-in-out;
+  transition:
+    background-color var(--tSpeed) var(--tAlgo),
+    color var(--tSpeed) var(--tAlgo),
+    border-color var(--tSpeed) var(--tAlgo);
+}
+
+.humanSort {
+  --ot: 0.4rem;
+  min-height: 100vh;
+  background-color: rgb(var(--backgroundcolor));
+  color: var(--readable);
+}
+
+.humanSort,
 button {
   font-family: Bahnschrift, 'DIN Alternate', 'Franklin Gothic Medium',
     'Nimbus Sans Narrow', sans-serif-condensed, sans-serif;
+  color: var(--readable);
+}
+button:disabled {
+  color: rgb(var(--color-8));
+  opacity: 0.333;
 }
 ol {
   margin: 0;
@@ -25,7 +160,8 @@ ol {
 button {
   padding: 0.4em 0.7em;
   text-transform: uppercase;
-  background-color: var(--bgc);
+  background-color: rgb(var(--button));
+  border-color: rgb(var(--buttonBorder));
 }
 button:focus-visible {
   outline: none;
@@ -38,8 +174,8 @@ button:focus-visible {
 /* ---- Main Compare  */
 
 .mainCompare {
-  --ch: var(--wt);
-  --ct: #80808000;
+  --ch: var(--highlight);
+  --ct: rgb(var(--backgroundcolor), 0);
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
@@ -76,7 +212,7 @@ button:focus-visible {
   flex-direction: row-reverse;
   justify-content: center;
   max-width: 100vw;
-  background-color: #4444;
+  background-color: rgb(var(--ranking));
 }
 .ranking li {
   flex: 0 1 14rem;
@@ -89,12 +225,12 @@ button:focus-visible {
   right: 0.7rem;
   font-size: 1rem;
   font-weight: bold;
-  color: #000;
+  color: var(--readable);
   text-shadow:
-    1px 1px 0 var(--wt),
-    1px -1px 0 var(--wt),
-    -1px 1px 0 var(--wt),
-    -1px -1px 0 var(--wt);
+    1px 1px 0 rgb(var(--color-2)),
+    1px -1px 0 rgb(var(--color-2)),
+    -1px 1px 0 rgb(var(--color-2)),
+    -1px -1px 0 rgb(var(--color-2));
 }
 .ranking img {
   display: block;
@@ -102,7 +238,7 @@ button:focus-visible {
   max-height: 14rem;
 }
 .pivot {
-  outline: var(--ot) solid var(--wt);
+  outline: var(--ot) solid var(--highlight);
   z-index: 7;
 }
 .outcast {
@@ -119,14 +255,14 @@ button:focus-visible {
   flex-basis: var(--side);
   line-height: var(--side);
   text-align: center;
-  outline: 1px solid #333;
-  background-color: #555;
+  outline: 1px solid rgb(var(--visItemBorder));
+  background-color: rgb(var(--visItem));
 }
 .visualization .outcast {
-  background-color: #777;
+  background-color: rgb(var(--visOutcast));
 }
 .visualization .pivot {
-  background-color: #999;
+  background-color: rgb(var(--visPivot));
 }
 
 .rd77em {
@@ -203,7 +339,7 @@ button:focus-visible {
 }
 .gallery .focused,
 .gallery .selected {
-  outline: var(--ot) solid var(--wt);
+  outline: var(--ot) solid var(--highlight);
   z-index: 7;
   position: relative;
   transition: top 250ms ease-out;
@@ -233,7 +369,7 @@ button:focus-visible {
   padding: 1.4rem 1.7rem;
   font-size: 1.7777em;
   text-transform: uppercase;
-  color: #474747;
+  color: rgb(var(--color-9));
 }
 .stats p {
   margin: 0.2em 0;
@@ -243,7 +379,7 @@ button:focus-visible {
   display: inline-block;
   min-width: 2em;
   text-align: left;
-  color: #000;
+  color: var(--readable);
 }
 
 /* ---- Controls  */
@@ -275,7 +411,6 @@ button:focus-visible {
   left: 50%;
   bottom: 3.2rem;
   transform: translate(-50%);
-  --hc: rgb(255, 236, 184, 0.1);
 }
 .keyHints ol {
   width: 240px;
@@ -289,17 +424,17 @@ button:focus-visible {
   float: left;
   position: relative;
   margin: 0 12px 3px 0;
-  background-color: #0001;
+  background-color: rgba(var(--color-11), 0.1);
   text-align: center;
   font-size: 20px;
-  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 2px 2px 2px rgba(var(--color-12), 0.5);
   pointer-events: none;
   transition: 444ms opacity ease-in-out 144ms;
 }
 .arrow.pressed {
   box-shadow:
-    0 2px 0 rgba(255, 236, 184, 0.25),
-    0 1px 8px rgba(255, 236, 184, 0.25);
+    0 2px 0 rgba(var(--color-1), 0.25),
+    0 1px 8px rgba(var(--color-5), 0.5);
 }
 .arrow.disabled {
   opacity: 0.2;
@@ -309,10 +444,10 @@ button:focus-visible {
 }
 .arrow.pressed span {
   text-shadow:
-    2px 2px 3px var(--hc),
-    -2px 2px 3px var(--hc),
-    2px -2px 3px var(--hc),
-    -2px -2px 3px var(--hc);
+    2px 2px 3px rgba(var(--color-2), 0.2),
+    -2px 2px 3px rgba(var(--color-2), 0.2),
+    2px -2px 3px rgba(var(--color-2), 0.1),
+    -2px -2px 3px rgba(var(--color-2), 0.1);
 }
 .up {
   margin: 0 83px 3px;
