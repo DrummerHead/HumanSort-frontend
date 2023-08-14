@@ -4,6 +4,20 @@
 
 HumanSort is a single page web application that helps sorting an array of pictures according to human preference.
 
+## Features
+
+Compare mode where you insert an unranked image to the array of ranked images through choosing the image you prefer:
+
+![HumanSort Compare mode](https://i.imgur.com/Gw7x47k.gif)
+
+Gallery mode where you can see all the ranked images and re-order them in case you don't fully agree with past decisions:
+
+![HumanSort Gallery mode](https://i.imgur.com/9ijwhRw.gif)
+
+Three color schemes to choose from:
+
+![HumanSort color schemes](https://i.imgur.com/wotx5FT.gif)
+
 ## Background
 
 With algorithms such as [MergeSort](https://en.wikipedia.org/wiki/Merge_sort) and [QuickSort](https://en.wikipedia.org/wiki/Quicksort) the entities being sorted have an inherent nature that facilitates their sorting. If you are sorting an array of numbers, strings or dates, each entity can be compared with each other and a predicate of "is A bigger than B" can easily be answered.
